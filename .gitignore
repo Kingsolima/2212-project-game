@@ -1,0 +1,20 @@
+# Build outputs
+/out/
+/bin/
+/target/
+/.gradle/
+/.idea/
+
+# VS Code / Cursor settings
+.vscode/
+.cursor/
+
+# OS-specific
+Thumbs.db
+Desktop.ini
+.DS_Store
+
+# Local data backups or logs
+/data/*.backup
+/logs/
+
