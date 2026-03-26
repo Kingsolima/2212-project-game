@@ -15,7 +15,7 @@ public class LevelStatistic {
         this.levelData = levelData;
     }
 
-    public updateStats(int wordsPerMinute, int mistakes, int highscore, int attempts, Level_status status) {
+    public void updateStats(int wordsPerMinute, int mistakes, int highscore, int attempts, Level_status status) {
         this.wordsPerMinute = wordsPerMinute;
         this.mistakes = mistakes;
         this.highscore = highscore;
