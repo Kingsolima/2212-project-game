@@ -1,10 +1,6 @@
-
-
-public enum Level_status {LOCKED, UNLOCKED, COMPLETED}
-
 public class LevelStatistic {
 
-    private levelData level;
+    private LevelData levelData;
     int wordsPerMinute;
     int mistakes;
     int highscore;
@@ -13,6 +9,8 @@ public class LevelStatistic {
 
     public LevelStatistic(LevelData levelData) {
         this.levelData = levelData;
+        mistakes = wordsPerMinute = highscore = attempts = 0;
+        status = Level_status.UNLOCKED;
     }
 
     public void updateStats(int wordsPerMinute, int mistakes, int highscore, int attempts, Level_status status) {
