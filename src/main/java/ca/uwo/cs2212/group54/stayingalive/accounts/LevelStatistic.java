@@ -23,4 +23,9 @@ public class LevelStatistic {
         this.status = status;
     }
 
+    public void clearStatistics() {
+            mistakes = wordsPerMinute = highscore = attempts = 0;
+            status = Level_status.LOCKED;
+    }
+
 }
