@@ -30,4 +30,8 @@ public class Account {
     public LevelStatistic getStats() {
         return levelStats;
     }
+
+    public PlayerProgress getProgress() {
+        return playerProgress;
+    }
 }
