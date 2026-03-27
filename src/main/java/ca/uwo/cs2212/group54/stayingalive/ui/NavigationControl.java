@@ -1,13 +1,14 @@
+package ui;
+
 /**
  * NavigationControl class both controls the screen navigation and the origin point of the application.
  * <p>
- * NavigationControl initializes all screens, then starts at the main menu screen. 
- * It also has a method to update the current screen, 
+ * NavigationControl initializes all screens, then starts at the main menu screen.
+ * It also has a method to update the current screen,
  * and a method to set the current screen to another and update.
- * 
+ *
  * @author Fardin Abbassi
  */
-
 public class NavigationControl {
     // Screen Control
     private static Screen[] listOfScreens = new Screen[8];

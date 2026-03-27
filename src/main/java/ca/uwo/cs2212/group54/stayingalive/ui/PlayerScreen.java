@@ -1,4 +1,4 @@
-package ca.uwo.cs2212.group54.stayingalive.ui;
+package ui;
 
 import javax.swing.*;
 import java.awt.*;
@@ -87,48 +87,23 @@ public class PlayerScreen extends JPanel {
         return bar;
     }
 
-    /** Round X button that exits / logs out and returns to the main menu. */
+    /** Back button using the back.png image from the global folder. */
     private JButton buildLogoutButton() {
-        JButton btn = new JButton() {
-            private boolean hovered = false;
-
-            {
-                addMouseListener(new MouseAdapter() {
-                    @Override public void mouseEntered(MouseEvent e) { hovered = true;  repaint(); }
-                    @Override public void mouseExited (MouseEvent e) { hovered = false; repaint(); }
-                });
-            }
-
-            @Override
-            protected void paintComponent(Graphics g) {
-                Graphics2D g2 = (Graphics2D) g.create();
-                g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-
-                int w = getWidth(), h = getHeight();
-                int r = Math.min(w, h) - 1;
-                int ox = (w - r) / 2, oy = (h - r) / 2;
-
-                // Circle fill
-                g2.setColor(hovered ? new Color(0xE0, 0x30, 0x30) : new Color(0xCC, 0x22, 0x22));
-                g2.fillOval(ox, oy, r, r);
-
-                // X mark
-                int pad = r / 4;
-                g2.setColor(Color.WHITE);
-                g2.setStroke(new BasicStroke(2.5f, BasicStroke.CAP_ROUND, BasicStroke.JOIN_ROUND));
-                g2.drawLine(ox + pad, oy + pad, ox + r - pad, oy + r - pad);
-                g2.drawLine(ox + r - pad, oy + pad, ox + pad, oy + r - pad);
-
-                g2.dispose();
-            }
-        };
-        btn.setPreferredSize(new Dimension(28, 28));
+        ImageIcon icon = null;
+        File imgFile = new File("global/back.png");
+        if (imgFile.exists()) {
+            Image img = new ImageIcon(imgFile.getAbsolutePath()).getImage()
+                            .getScaledInstance(34, 34, Image.SCALE_SMOOTH);
+            icon = new ImageIcon(img);
+        }
+        JButton btn = new JButton(icon);
+        btn.setPreferredSize(new Dimension(34, 34));
         btn.setOpaque(false);
         btn.setContentAreaFilled(false);
         btn.setBorderPainted(false);
         btn.setFocusPainted(false);
         btn.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-        btn.setToolTipText("Logout");
+        btn.setToolTipText("Back");
         btn.addActionListener(e -> navigator.goToMainMenu());
         return btn;
     }

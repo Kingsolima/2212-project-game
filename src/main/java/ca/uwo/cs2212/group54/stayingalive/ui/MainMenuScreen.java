@@ -1,11 +1,13 @@
+package ui;
+
 /**
  * MainMenuScreen class represents the main menu screen of Staying Alive.
  * <p>
- * MainMenuScreen implements the Screen interface, 
- * so it has methods to show the screen, move to the next screen, 
+ * MainMenuScreen implements the Screen interface,
+ * so it has methods to show the screen, move to the next screen,
  * and get the class' frame.
  * Since Screen implements ActionListener, it also has a method to handle button clicks.
- * 
+ *
  * @author Fardin Abbassi
  */
 
@@ -138,4 +140,8 @@ public class MainMenuScreen implements Screen {
      */
     @Override
     public JFrame getFrame() {return mainMenuFrame;}
+
+    public static void main(String[] args) {
+        javax.swing.SwingUtilities.invokeLater(() -> new MainMenuScreen().showScreen());
+    }
 }
