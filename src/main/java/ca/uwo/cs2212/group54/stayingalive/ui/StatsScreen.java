@@ -1,4 +1,4 @@
-package ui;
+// package ui;
 
 import javax.swing.*;
 import java.awt.*;
@@ -14,6 +14,7 @@ import java.io.File;
  *   - Right half: player name heading + avatar image
  *   - Back button (curved arrow) in the top-right corner
  */
+//public class StatsScreen extends JPanel implements Screen {
 public class StatsScreen extends JPanel {
 
     // Colours 

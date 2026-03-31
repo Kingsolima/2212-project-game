@@ -1,4 +1,4 @@
-// FA: Added implementation of screen interface, will need to connect to nav control and properly integrate class with interfacce methods.
+// FA: Added implementation of screen interface, will need to connect to nav control and properly integrate class with interface methods.
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.*;
@@ -19,7 +19,8 @@ import java.net.URL;
  * Navigation callbacks are supplied via a {@link Navigator} interface so this
  * class stays decoupled from whatever navigation controller the project uses.
  */
-public class PlayerScreen extends JPanel implements Screen {
+//public class PlayerScreen extends JPanel implements Screen {
+public class PlayerScreen extends JPanel {
 
     // ── Colour palette ────────────────────────────────────────────────────
     private static final Color BG_COLOR      = new Color(0x6A, 0x5A, 0xCD); // medium-purple
