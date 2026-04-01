@@ -14,17 +14,17 @@ import java.awt.event.*;
 
 public class TutorialScreen implements Screen{
     // Tutorial Frame
-    static JFrame tutorialFrame = new JFrame("Staying Alive - Tutorial");
+    private JFrame tutorialFrame = new JFrame("Staying Alive - Tutorial");
 
     // UI Colours
-    final static Color backgroundPurple = new Color(106, 69, 156);
-    final static Color tutorialBoxOutline = Color.white;
+    private final static Color backgroundPurple = new Color(106, 69, 156);
+    private final static Color tutorialBoxOutline = Color.white;
 
     // Navigation Icons
-    private ImageIcon leftArrowIcon = new ImageIcon(); // add icons
-    private ImageIcon rightArrowIcon = new ImageIcon(); // add icons
-    private ImageIcon backArrow = new ImageIcon(); // add icons
-    private ImageIcon progressDots = new ImageIcon(); // also add progression dots for tutorial steps, add icons
+    private ImageIcon leftArrowIcon; // add icons
+    private ImageIcon rightArrowIcon; // add icons
+    private ImageIcon backArrow; // add icons
+    private ImageIcon progressDots; // also add progression dots for tutorial steps, add icons
 
     // Arrow Buttons
     private JButton leftArrowButton = new JButton(leftArrowIcon);
@@ -43,9 +43,9 @@ public class TutorialScreen implements Screen{
     @Override
     public void actionPerformed(ActionEvent e) {
         // TODO Properly fix up tutorial navigation
-        if (e.getSource() == leftArrowButton) {}
-        else if (e.getSource() == rightArrowButton) {}
-        else if (e.getSource() == backToPreviousButton) {this.moveToNextScreen("back");} // set up for different ways to go back?
+        if (e.getActionCommand().equals("Move Left")) {}
+        else if (e.getActionCommand().equals("Move Right")) {}
+        else if (e.getActionCommand().equals("Return")) {this.moveToNextScreen("back");} // set up for different ways to go back?
     }
 
     /** ADD DESCRIPTION HERE
@@ -54,14 +54,27 @@ public class TutorialScreen implements Screen{
      */
     @Override
     public void showScreen() {
+        // Set up image icons
+        leftArrowIcon = new ImageIcon();
+        rightArrowIcon = new ImageIcon();
+        backArrow = new ImageIcon("global/back.png"); // TODO: adjust as needed
+        progressDots = new ImageIcon();
+
 		// Set Up Left and Right Arrows
-		leftArrowButton.setBounds(200, 200, 20, 20);
+        leftArrowButton = new JButton(leftArrowIcon);
+		leftArrowButton.setBounds(200, 200, 40, 40);
+        leftArrowButton.setActionCommand("Move Left");
         leftArrowButton.addActionListener(this);
-		rightArrowButton.setBounds(500, 200, 20, 20);
+
+        rightArrowButton = new JButton(rightArrowIcon);
+		rightArrowButton.setBounds(500, 200, 40, 40);
+        rightArrowButton.setActionCommand("Move Right");
         rightArrowButton.addActionListener(this);
 
         // Set up Back Button
-        backToPreviousButton.setBounds(20, 20, 20,20);
+        backToPreviousButton = new JButton(backArrow);
+        backToPreviousButton.setBounds(700, 20, 40,40);
+        backToPreviousButton.setActionCommand("Return");
         backToPreviousButton.addActionListener(this);
 
         // TODO: Set up progress dots
