@@ -1,6 +1,6 @@
-package game.levels;
+package game.Levels;
 
-import game.Enemy;
+import game.Enemies.Enemy;
 import sprites.Sprite;
 
 /**

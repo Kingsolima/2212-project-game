@@ -1,7 +1,7 @@
 package game;
 
-import game.levels.LevelData;
 import accounts.ac;
+import game.Levels.LevelData;
 
 enum Difficulty {
     EASY,
@@ -21,7 +21,9 @@ public class Gameplay {
     private int time;
     private int score;
     private int maxWeight;
-    private 
+    private int currWeight;
+    private Difficulty difficulty;
+    private float spawnDelay;
 
     
     public Gameplay(ac player, LevelData levelData, Difficulty difficulty) {
@@ -29,15 +31,27 @@ public class Gameplay {
         this.mistakes = 0;
         this.corrects = 0;
         this.time = 0;
+        this.difficulty = difficulty;
 
         // This is for how much enemies are present in the game.
+        // Maybe with the difficulty, the speed of the enemies should increase too.
         switch (difficulty) {
-            case EASY: this.maxWeight = 10; break;
-            case MEDIUM: this.maxWeight = 20; break;
-            case HARD: this.maxWeight = 30; break;
+            case EASY: {
+                this.maxWeight = 10; 
+                this.spawnDelay = 3.0f;
+                break;
+            }
+            case MEDIUM: {
+                this.maxWeight = 15; 
+                this.spawnDelay = 2.5f;
+                break;
+            }
+            case HARD: {
+                this.maxWeight = 20;
+                this.spawnDelay = 1.0f;
+                break;
+            }
         }
-
-
     }
 
     public void update() {
@@ -54,7 +68,6 @@ public class Gameplay {
         // Check if input matches any of the enemies' words.
         // If match, remove word from enemy and increase score.
         // If no match, increase mistakes and stun player for 1 second (no input allowed).
-
     }
     
     public void updateScore(int amount, Difficulty difficulty) {
