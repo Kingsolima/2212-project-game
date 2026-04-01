@@ -2,9 +2,9 @@ package ca.uwo.cs2212.group54.stayingalive.accounts;
 
 import java.io.File;
 import java.util.ArrayList;
-import java.util.logging.Level;
 
 import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class Parental {
@@ -18,14 +18,20 @@ public class Parental {
 
         try {
             ObjectMapper objectMapper = new ObjectMapper();
+            // loading player accounts
             File file = new File("data/players.json");
-
             if (file.exists() && file.length() > 0) {
                 accounts = objectMapper.readValue(file, new TypeReference<ArrayList<Account>>() {});
             } else {
                 accounts = new ArrayList<Account>();
             }
 
+            // loading master password:
+            File masterPassFile = new File("data/master.json");
+            if (file.exists() && file.length() > 0) {
+                JsonNode node = objectMapper.readTree(masterPassFile);
+                masterPass = node.asText("master_pass").toCharArray();
+            } else {System.out.println("No data in " + masterPassFile.getName());}
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -103,5 +109,12 @@ public class Parental {
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    public Account getAccount(String username) {
+        for (Account account: accounts) {
+            if (account.getUsername().equals(username)) return account;
+        }
+        return null;
     }
 }
