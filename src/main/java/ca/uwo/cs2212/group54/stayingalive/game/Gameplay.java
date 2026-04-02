@@ -1,21 +1,16 @@
 package game;
 
 import accounts.ac;
-import game.Levels.LevelData;
 import game.Enemies.Enemy;
-import java.util.Queue;
+import game.Levels.Difficulty;
+import game.Levels.LevelData;
+import java.awt.Point;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.ArrayList;
-import java.awt.Point;
-import java.util.Arrays;
+import java.util.Queue;
 import java.util.Random;
-
-enum Difficulty {
-    EASY,
-    MEDIUM,
-    HARD
-}
 
 /**
  * Gameplay class
@@ -39,15 +34,23 @@ public class Gameplay {
     private float inputLockTimer;
     private static final Point[] SPAWN_POINTS = new Point[16];
     private Random random;
+    private boolean levelCleared;
 
+    private static final int PLAYER_X = 400;
+    private static final int PLAYER_Y = 300;
+    private static final int SAFE_RADIUS = 50;
     
     public Gameplay(ac player, LevelData levelData, Difficulty difficulty) {
-        this.lives = ac.getLives(); // Either 3 as a default or based on the account's lives. (Need to confirm)
+        this.lives = 3; // Either 3 as a default or based on the account's lives. (Need to confirm)
+        // if (player.powerups.get("extraLife")) {
+        //     this.lives++;
+        // }
         this.mistakes = 0;
         this.corrects = 0;
         this.time = 0;
         this.score = 0;
         this.difficulty = difficulty;
+        this.levelCleared = false;
 
         // This is for how much enemies are present in the game.
         // Maybe with the difficulty, the speed of the enemies should increase too.
@@ -88,11 +91,35 @@ public class Gameplay {
         }
     }
 
-    private static final int PLAYER_X = 400;
-    private static final int PLAYER_Y = 300;
-    private static final int SAFE_RADIUS = 50;
+    // Getters
+
+    public int getLives() {
+        return this.lives;
+    }
+
+    public int getScore() {
+        return this.score;
+    }
+
+    public int getWPM() {
+        return this.calculateWPM();
+    }
+
+    public float getTime() {
+        return this.time;
+    }
+
+    public List<Enemy> getActiveEnemies() {
+        return this.activeEnemies;
+    }
 
     public void update(float deltaTime) {
+        if (isGameOver() || isLevelCleared()) {
+            return;
+        }
+
+        this.time += deltaTime; // track elapsed game time
+
         if (inputLockTimer > 0) {
             inputLockTimer -= deltaTime;
         }
@@ -138,13 +165,17 @@ public class Gameplay {
             }
         }
 
-        // TODO: Implement other update logic
-        // Update score
         // Check if level is completed
-        // Check if game is over
+        if (pendingEnemies.isEmpty() && activeEnemies.isEmpty()) {
+            this.levelCleared = true;
+        }
     }
 
     public void processInput(String input) {
+        if (isGameOver() || isLevelCleared()) {
+            return;
+        }
+        
         if (inputLockTimer > 0) {
             return; // Player is stunned
         }
@@ -187,9 +218,14 @@ public class Gameplay {
     public boolean isGameOver() {
         return this.lives <= 0;
     }
+    
+    public boolean isLevelCleared() {
+        return this.levelCleared;
+    }
 
-    public void pauseGame() {
-        // TODO: Implement pause game function
+    public int calculateWPM() {
+        if (time == 0) return 0;
+        return (int) (corrects / (time / 60.0f));
     }
 
     public void changeLives(int change) {
