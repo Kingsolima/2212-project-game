@@ -127,6 +127,7 @@ public class Gameplay {
             
             if (enemy.contact(PLAYER_X, PLAYER_Y, SAFE_RADIUS)) {
                 this.changeLives(-enemy.getDamage());
+                this.updateScore(-100, this.difficulty);
                 this.currWeight -= enemy.getWeight();
                 // Remove the Sprite from UI parent 
                 if (enemy.getSprite() != null && enemy.getSprite().getImage() != null) {
@@ -159,6 +160,7 @@ public class Gameplay {
                 updateScore(enemy.getScore(), difficulty);
                 
                 if (enemy.isDefeated()) {
+                    updateScore(enemy.getScore() * 5, difficulty);
                     currWeight -= enemy.getWeight();
                     activeEnemies.remove(enemy);
                 }
