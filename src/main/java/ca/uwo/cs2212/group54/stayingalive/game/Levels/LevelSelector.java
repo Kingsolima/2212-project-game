@@ -54,7 +54,14 @@ public class LevelSelector {
                 return null;
         }
     }
-    
+
+    /**
+     * Builds a level with the given number and word pool.
+     * 
+     * @param number The level number.
+     * @param wordPool The pool of words to use for the level.
+     * @return The LevelData for the given number and word pool.
+     */
     private static LevelData buildLevel(int number, String[] wordPool) {
         Sprite background = new Sprite(null, 0, 0); // TODO: replace null with section-1 ImageIcon
 
@@ -121,8 +128,6 @@ public class LevelSelector {
             }
         }
     }
-
-    // Helpers
 
     /**
      * Creates an Enemy with randomly sampled words from the given pool.
