@@ -1,8 +1,8 @@
-package game.Levels;
+package ca.uwo.cs2212.group54.stayingalive.game.Levels;
 
-import game.Enemies.Enemy;
-import game.Enemies.Enemy_Attribute;
-import sprites.Sprite;
+import ca.uwo.cs2212.group54.stayingalive.game.Enemies.Enemy;
+import ca.uwo.cs2212.group54.stayingalive.game.Enemies.Enemy_Attribute;
+import ca.uwo.cs2212.group54.stayingalive.sprites.Sprite;
 /**
  * LevelSelector class
  *
@@ -47,11 +47,14 @@ public class LevelSelector {
     public static LevelData getLevel(int section, int number, Difficulty difficulty) {
         String[] wordPool = selectWordPool(difficulty);
 
-        return switch (section) {
-            case 1 -> buildSection1Level(number, wordPool);
-            case 2 -> buildSection2Level(number, wordPool);
-            default -> null;
-        };
+        switch (section) {
+            case 1:
+                return buildSection1Level(number, wordPool);
+            case 2:
+                return buildSection2Level(number, wordPool);
+            default:
+                return null;
+        }
     }
 
     // Section 1
@@ -60,7 +63,7 @@ public class LevelSelector {
         Sprite background = new Sprite(null, 0, 0); // TODO: replace null with section-1 ImageIcon
 
         switch (number) {
-            case 1 -> {
+            case 1: {
                 // 10 Normal enemies — gentle introduction
                 Enemy[] enemies = {
                     makeEnemy(1, Enemy_Attribute.NORMAL,  wordPool),
@@ -76,7 +79,7 @@ public class LevelSelector {
                 };
                 return new LevelData(1, 1, enemies, background);
             }
-            case 2 -> {
+            case 2: {
                 // Mix of Normal and a hasHeart enemy
                 Enemy[] enemies = {
                     makeEnemy(1, Enemy_Attribute.NORMAL,   wordPool),
@@ -96,7 +99,7 @@ public class LevelSelector {
                 };
                 return new LevelData(1, 2, enemies, background);
             }
-            case 3 -> {
+            case 3: {
                 // Introduce the Big enemy type
                 Enemy[] enemies = {
                     makeEnemy(1, Enemy_Attribute.NORMAL, wordPool),
@@ -117,7 +120,7 @@ public class LevelSelector {
                };
                 return new LevelData(1, 3, enemies, background);
             }
-            default -> {
+            default: {
                 return null;
             }
         }
@@ -130,19 +133,19 @@ public class LevelSelector {
 
         // TODO: Implement section 2 levels
         switch (number) {
-            case 1 -> {
+            case 1: {
                 Enemy[] enemies = {};
                 return new LevelData(2, 1, enemies, background);
             }
-            case 2 -> {
+            case 2: {
                 Enemy[] enemies = {};
                 return new LevelData(2, 2, enemies, background);
             }
-            case 3 -> {
+            case 3: {
                 Enemy[] enemies = {};
                 return new LevelData(2, 3, enemies, background);
             }
-            default -> {
+            default: {
                 return null;
             }
         }
