@@ -1,7 +1,10 @@
-package ui;
+package ca.uwo.cs2212.group54.stayingalive.ui;
 
-import java.awt.event.*;
-import javax.swing.*;
+// package ui;
+
+import java.awt.event.ActionListener;
+
+import javax.swing.JFrame;
 
 public interface Screen extends ActionListener{
     void showScreen();

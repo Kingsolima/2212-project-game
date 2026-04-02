@@ -1,3 +1,5 @@
+package ca.uwo.cs2212.group54.stayingalive.ui;
+
 /**
  * NavigationControl class both controls the screen navigation and the origin point of the application.
  * <p>
@@ -12,6 +14,8 @@ public class NavigationControl {
     // Screen Control
     private static Screen[] listOfScreens = new Screen[8];
     private static Screen currentScreen;
+    private static int currentScreenIndex  = 0;
+    private static int previousScreenIndex = 0;
 
     // Screen Dimensions
     public final static int screenW = 800; //sets the screen width
@@ -38,9 +42,23 @@ public class NavigationControl {
      */
     public static void setCurrentScreen(int screenToSet) {
         if (currentScreen != null && screenToSet != 1) currentScreen.getFrame().dispose();
+        previousScreenIndex = currentScreenIndex;
+        currentScreenIndex  = screenToSet;
         currentScreen = listOfScreens[screenToSet];
         updateScreen();
     }
+
+    /**
+     * Navigates back to the previous screen.
+     * @author Fardin Abbassi
+     */
+    public static void goBack() {
+        setCurrentScreen(previousScreenIndex);
+    }
+    /**
+     * Get screen at the index of the screen list.
+     */
+    public static Screen getScreen(int index) {return listOfScreens[index];}
     
     /**
      * Constructor for NavigationControl. Initializes screens, then starts at the main menu screen.
@@ -50,21 +68,24 @@ public class NavigationControl {
         // Initialize screens (add as screens are implemented)
         MainMenuScreen mainMenu = new MainMenuScreen();
         LoginScreen loginScreen = new LoginScreen();
-        // tutorial
-        PlayerScreen playerScreen = null;
+        TutorialScreen tutorialScreen = new TutorialScreen();
+        PlayerScreen playerScreen = new PlayerScreen(null); // TODO: replace placeholder constructor
+        StatsScreen statsScreen = new StatsScreen("Placeholder"); // TODO: Replace placeholder constructor
+        GameStoreScreen gameStoreScreen = new GameStoreScreen(3000);        // GameStoreScreen gameStoreScreen = new GameStoreScreen(null);
 
         // Add screens to list of screens (add as screens are implemented)
         listOfScreens[0] = mainMenu;
-        listOfScreens[1] = loginScreen;     // might not be necessary due to implementation as a pop-up
-        listOfScreens[2] = null;            // tutorial
-        listOfScreens[3] = playerScreen;    // player
-        listOfScreens[4] = null;            // stats
-        listOfScreens[5] = null;            // game store
-        listOfScreens[6] = null;            // parental control
-        listOfScreens[7] = null;            // gameplay
+        listOfScreens[1] = loginScreen;         // might not be necessary due to implementation as a pop-up
+        listOfScreens[2] = tutorialScreen;      // tutorial
+        listOfScreens[3] = playerScreen;        // player
+        listOfScreens[4] = statsScreen;         // stats
+        listOfScreens[5] = gameStoreScreen;     // game store           //listOfScreens[5] = gameStoreScreen;     // game store
+        listOfScreens[6] = null;                // parental control
+        listOfScreens[7] = null;                // gameplay
         
 
         // Start at main menu
+//        setCurrentScreen(0);
         setCurrentScreen(0);
     }
 
