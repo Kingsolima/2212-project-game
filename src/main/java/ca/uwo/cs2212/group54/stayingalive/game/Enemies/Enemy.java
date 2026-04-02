@@ -17,6 +17,7 @@ public class Enemy {
     private float speed;
     private int weight;
     private int score;
+    private int currentWordIndex;
 
     protected boolean timeStopped; // How do we implement the time stop???
 
@@ -38,26 +39,32 @@ public class Enemy {
                 this.speed = 1.0f;
                 this.weight = 1;
                 this.score = 10;
+                break;
             }
             case HAS_HEART: {
                 this.damage = 1;
                 this.speed = 1.0f;
                 this.weight = 1;
                 this.score = 25;
+                break;
             }
             case BIG: {
                 this.damage = 2;
                 this.speed = 0.75f;
                 this.weight = 5;
                 this.score = 50;
+                break;
             }
             case BOSS: {
                 this.damage = 2;
                 this.speed = 0.5f;
                 this.weight = 10;
                 this.score = 100;
+                break;
             }
         }
+        
+        this.currentWordIndex = 0;
     }
 
     /**
@@ -86,11 +93,46 @@ public class Enemy {
         // Move contact logic to Gameplay?
         return false;
     }
+    public int getWeight() {
+        return this.weight;
+    }
+
+    /**
+     * Gets the score given by the enemy when defeated.
+     * 
+     * @return The score of the enemy.
+     */
+    public int getScore() {
+        return this.score;
+    }
+
+    /**
+     * Gets the current word to be typed.
+     * 
+     * @return The current word string, or null if defeated.
+     */
+    public String getCurrentWord() {
+        if (isDefeated()) {
+            return null;
+        }
+        return this.words[this.currentWordIndex];
+    }
+
+    /**
+     * Checks if the enemy has no more words left.
+     * 
+     * @return true if default, false otherwise.
+     */
+    public boolean isDefeated() {
+        return this.currentWordIndex >= this.words.length;
+    }
     
     /**
      * Updates the words of the enemy.
      */
     public void updateWords() {
-        // Either eliminate current word or 
+        if (!isDefeated()) {
+            this.currentWordIndex++;
+        }
     }
 }

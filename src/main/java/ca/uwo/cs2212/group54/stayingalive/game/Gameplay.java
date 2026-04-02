@@ -2,6 +2,13 @@ package game;
 
 import accounts.ac;
 import game.Levels.LevelData;
+import game.Enemies.Enemy;
+import java.util.Queue;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.ArrayList;
+import java.awt.Point;
+import java.util.Random;
 
 enum Difficulty {
     EASY,
@@ -24,6 +31,13 @@ public class Gameplay {
     private int currWeight;
     private Difficulty difficulty;
     private float spawnDelay;
+    
+    private Queue<Enemy> pendingEnemies;
+    private List<Enemy> activeEnemies;
+    private float timeSinceLastSpawn;
+    private float inputLockTimer;
+    private static final Point[] SPAWN_POINTS = new Point[16];
+    private Random random;
 
     
     public Gameplay(ac player, LevelData levelData, Difficulty difficulty) {
@@ -52,10 +66,56 @@ public class Gameplay {
                 break;
             }
         }
+        
+        this.pendingEnemies = new LinkedList<>();
+        if (levelData != null && levelData.getEnemies() != null) {
+            for (Enemy e : levelData.getEnemies()) {
+                this.pendingEnemies.add(e);
+            }
+        }
+        this.activeEnemies = new ArrayList<>();
+        this.random = new Random();
+        this.timeSinceLastSpawn = 0;
+        this.inputLockTimer = 0;
+        this.currWeight = 0;
+        
+        // Setup 16 target corners for spawn
+        int[][] corners = {
+            {50, 50}, {100, 50}, {50, 100}, {100, 100}, // Top Left
+            {700, 50}, {750, 50}, {700, 100}, {750, 100}, // Top Right
+            {50, 500}, {100, 500}, {50, 550}, {100, 550}, // Bottom Left
+            {700, 500}, {750, 500}, {700, 550}, {750, 550} // Bottom Right
+        };
+        for (int i = 0; i < 16; i++) {
+            SPAWN_POINTS[i] = new Point(corners[i][0], corners[i][1]);
+        }
     }
 
-    public void update() {
-        // TODO: Implement update function
+    public void update(float deltaTime) {
+        if (inputLockTimer > 0) {
+            inputLockTimer -= deltaTime;
+        }
+
+        // Handle enemy spawning
+        timeSinceLastSpawn += deltaTime;
+        if (timeSinceLastSpawn >= spawnDelay) {
+            Enemy nextEnemy = pendingEnemies.peek();
+            if (nextEnemy != null) {
+                if (currWeight + nextEnemy.getWeight() <= maxWeight) {
+                    Enemy spawned = pendingEnemies.poll();
+                    
+                    // Assign random spawn point representation
+                    Point spawnPt = SPAWN_POINTS[random.nextInt(16)];
+                    // Setup enemy location logic will be implemented in rendering logic
+                    
+                    activeEnemies.add(spawned);
+                    currWeight += spawned.getWeight();
+                    timeSinceLastSpawn = 0;
+                }
+            }
+        }
+
+        // TODO: Implement other update logic
         // Update enemy positions
         // Check for collisions
         // Update score
@@ -65,9 +125,28 @@ public class Gameplay {
     }
 
     public void processInput(String input) {
-        // Check if input matches any of the enemies' words.
-        // If match, remove word from enemy and increase score.
-        // If no match, increase mistakes and stun player for 1 second (no input allowed).
+        if (inputLockTimer > 0) {
+            return; // Player is stunned
+        }
+
+        for (Enemy enemy : activeEnemies) {
+            String currentWord = enemy.getCurrentWord();
+            if (currentWord != null && currentWord.equals(input)) {
+                // Match found
+                enemy.updateWords();
+                updateScore(enemy.getScore(), difficulty);
+                
+                if (enemy.isDefeated()) {
+                    currWeight -= enemy.getWeight();
+                    activeEnemies.remove(enemy);
+                }
+                return; // hit only the first matching enemy!
+            }
+        }
+
+        // No match found
+        mistakes++;
+        inputLockTimer = 1.0f;
     }
     
     public void updateScore(int amount, Difficulty difficulty) {
