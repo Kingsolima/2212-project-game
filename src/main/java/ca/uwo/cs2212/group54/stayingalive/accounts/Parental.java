@@ -1,8 +1,10 @@
 package ca.uwo.cs2212.group54.stayingalive.accounts;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Map;
+import java.util.Objects;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.core.type.TypeReference;
@@ -10,8 +12,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class Parental {
     @JsonProperty("master_pass")
-    private char[] masterPass;
-    private ArrayList<Account> accounts;
+    private String masterPass;
+    private static ArrayList<Account> accounts;
 
     public Parental() {
         //initialize masterPass and accounts by getting them from the storage
@@ -24,20 +26,25 @@ public class Parental {
             if (file.exists() && file.length() > 0) {
                 accounts = objectMapper.readValue(file, new TypeReference<ArrayList<Account>>() {});
             } else {
+                System.out.println("new array");
                 accounts = new ArrayList<Account>();
             }
             // loading master password:
             File masterPassFile = new File("data/master.json");
-            if (file.exists() && file.length() > 0) {
-                Map<String,String> data = objectMapper.readValue(masterPassFile,Map.class);
-                masterPass = data.get("master_pass").toCharArray();
+            if (masterPassFile.exists() && masterPassFile.length() > 0) {
+                Map<String,String> data1 = objectMapper.readValue(masterPassFile,Map.class);
+                masterPass = data1.get("master_pass");
             } else {System.out.println("No data in " + masterPassFile.getName());}
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
-    public void createAccount(String username, char[] pass) {
+    public boolean createAccount(String username, String pass) {
+        //true if account created, false if not created (account name already exists)
+        if (Objects.nonNull(getAccount(username))) return false;
+        int preCreation = accounts.size();
+
         Account newAccount = new Account(username, pass);
         accounts.add(newAccount);
         // not loading from storage since accounts array should already have all the relevant data.
@@ -49,9 +56,12 @@ public class Parental {
         } catch (Exception e) {
             e.printStackTrace();
         }
+        int postCreation = accounts.size();
+        if (accounts.size() == 1) System.out.println("first account created");
+        return postCreation - preCreation == 1; // successful account creation and adding to array
     }
 
-    private void resetPassword(String username, char[] newPass) {
+    private void resetPassword(String username, String newPass) {
         for (Account account: accounts) {
             if (account.getUsername().equals(username)) {
                 account.setPassword(newPass);
@@ -100,15 +110,21 @@ public class Parental {
         return accounts;
     }
 
-    private void saveAccountData() {
+    //will just update the account info in the arraylist
+    //will not readjust the information on the levelstatistic
+    //account is the updated account object
+    public void updateAccountData(Account account) {
+        int i = accounts.indexOf(account);
+        accounts.set(i,account);
+        saveAccountData();
+    }
+
+    public static void saveAccountData() {
         File file = new File("data/players.json");
         ObjectMapper objectMapper = new ObjectMapper();
-
         try {
             objectMapper.writerWithDefaultPrettyPrinter().writeValue(file, accounts);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        } catch (IOException e) {}
     }
 
     public Account getAccount(String username) {
@@ -118,7 +134,21 @@ public class Parental {
         return null;
     }
 
-    protected char[] getMasterPass() {
+    protected String getMasterPass() {
         return masterPass;
     }
+
+    protected void deleteAllAccounts() {
+        ObjectMapper objectMapper = new ObjectMapper();
+        File file = new File("data/players.json");
+
+        try {
+            // Write an empty list to the file
+            objectMapper.writeValue(file, new ArrayList<>());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        accounts.clear(); // clearing the list
+    }
+
 }
