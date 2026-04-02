@@ -1,12 +1,16 @@
 /**
  * NavigationControl class both controls the screen navigation and the origin point of the application.
  * <p>
- * NavigationControl initializes all screens, then starts at the main menu screen. 
- * It also has a method to update the current screen, 
+ * NavigationControl initializes all screens, then starts at the main menu screen.
+ * It also has a method to update the current screen,
  * and a method to set the current screen to another and update.
- * 
+ *
  * @author Fardin Abbassi
  */
+
+import java.awt.*;
+import java.awt.event.*;
+import javax.swing.*;
 
 public class NavigationControl {
     // Screen Control
@@ -57,6 +61,54 @@ public class NavigationControl {
      * Get screen at the index of the screen list.
      */
     public static Screen getScreen(int index) {return listOfScreens[index];}
+
+    /**
+     * Recursively walks every component in the container and scales its font
+     * proportionally to the given scale factor.
+     * The original font size is stored as a client property on first call so
+     * repeated resizes always scale from the base, not from the already-scaled size.
+     * @author Fardin Abbassi
+     */
+    public static void scaleFonts(Container root, float scale) {
+        for (Component c : root.getComponents()) {
+            if (c instanceof JComponent) {
+                JComponent jc = (JComponent) c;
+                Float base = (Float) jc.getClientProperty("baseFontSize");
+                if (base == null) {
+                    base = c.getFont().getSize2D();
+                    jc.putClientProperty("baseFontSize", base);
+                }
+                c.setFont(c.getFont().deriveFont(base * scale));
+            }
+            if (c instanceof Container) {
+                scaleFonts((Container) c, scale);
+            }
+        }
+    }
+
+    /**
+     * Attaches a ComponentListener to the given frame that calls scaleFonts
+     * whenever the window is resized. Safe to call multiple times — removes
+     * any previously attached scaler before adding a new one.
+     * @author Fardin Abbassi
+     */
+    public static void attachFontScaler(JFrame frame) {
+        for (ComponentListener cl : frame.getComponentListeners()) {
+            frame.removeComponentListener(cl);
+        }
+        frame.addComponentListener(new ComponentAdapter() {
+            @Override
+            public void componentResized(ComponentEvent e) {
+                float scale = Math.min(
+                    frame.getWidth()  / (float) screenW,
+                    frame.getHeight() / (float) screenH
+                );
+                scaleFonts(frame.getContentPane(), scale);
+                frame.revalidate();
+                frame.repaint();
+            }
+        });
+    }
     
     /**
      * Constructor for NavigationControl. Initializes screens, then starts at the main menu screen.

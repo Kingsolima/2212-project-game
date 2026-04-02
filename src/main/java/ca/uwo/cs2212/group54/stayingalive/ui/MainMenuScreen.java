@@ -137,6 +137,7 @@ public class MainMenuScreen implements Screen {
         mainMenuFrame.setBackground(backgroundPurple);
         mainMenuFrame.setVisible(true);
         mainMenuFrame.setLocationRelativeTo(null);
+        NavigationControl.attachFontScaler(mainMenuFrame);
     }
 
     /** ADD DESCRIPTION HERE

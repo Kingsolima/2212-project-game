@@ -225,6 +225,7 @@ public class TutorialScreen implements Screen {
         tutorialFrame.setBackground(BACKGROUND_PURPLE);
         tutorialFrame.setVisible(true);
         tutorialFrame.setLocationRelativeTo(null);
+        NavigationControl.attachFontScaler(tutorialFrame);
     }
 
     /**

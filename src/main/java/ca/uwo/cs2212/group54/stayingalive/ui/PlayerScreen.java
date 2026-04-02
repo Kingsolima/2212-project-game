@@ -276,6 +276,7 @@ public class PlayerScreen implements Screen {
         //gameStoreFrame.setContentPane(screen);
         playerFrame.setLocationRelativeTo(null);
         playerFrame.setVisible(true);
+        NavigationControl.attachFontScaler(playerFrame);
     }
     // TODO: public moveToNextScreen
     @Override

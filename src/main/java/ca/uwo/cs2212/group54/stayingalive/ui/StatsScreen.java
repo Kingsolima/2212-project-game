@@ -10,47 +10,49 @@ import java.io.File;
  *
  * Layout:
  *   - Purple background matching the app theme
- *   - Left half: labelled stat rows (label + rounded grey value box)
+ *   - Left half: JTabbedPane with one tab per level (Level 1, Level 2, Level 3)
+ *     Each tab shows labelled stat rows (label + rounded grey value box)
  *   - Right half: player name heading + avatar image
  *   - Back button (curved arrow) in the top-right corner
  */
-//public class StatsScreen extends JPanel implements Screen {
 public class StatsScreen implements Screen {
 
-    // Colours 
-    private static final Color BG_COLOR  = new Color(106, 69, 156);
-    private static final Color FIELD_BG  = new Color(215, 215, 215);
+    // Colours
+    private static final Color BG_COLOR      = new Color(106, 69, 156);
+    private static final Color FIELD_BG      = new Color(215, 215, 215);
+    private static final Color TAB_SELECTED  = new Color(80, 50, 120);
+    private static final Color TAB_BG        = new Color(90, 60, 130);
+
     // Data
-    private final String   playerName;
+    private final String playerName;
     private Image avatarImage;
     private JFrame statsFrame;
 
-    // Default / placeholder values — replace with real data from the stats system
-    private int    highScore    = 0;
-    private int    avgWpm       = 0;
-    private int    peakWpm      = 0;
-    private double accuracy     = 0.0;
-    private int    errorCount   = 0;
-    private String timePlayed   = "0 minutes";
-    private int    currentLevel = 1;
-    private int    wordsTyped   = 0;
+    private static final int LEVELS = 3;
+
+    // Per-level stats (index 0 = Level 1, 1 = Level 2, 2 = Level 3)
+    private int[]    highScore   = new int[LEVELS];
+    private int[]    avgWpm      = new int[LEVELS];
+    private int[]    peakWpm     = new int[LEVELS];
+    private double[] accuracy    = new double[LEVELS];
+    private int[]    errorCount  = new int[LEVELS];
+    private String[] timePlayed  = {"0 minutes", "0 minutes", "0 minutes"};
+    private int[]    wordsTyped  = new int[LEVELS];
 
     // Constructor
     public StatsScreen(String playerName) {
         this.playerName = playerName;
         loadAvatar("global/download.png");
-//        buildUI();
     }
 
-    // Setters for live data 
-    public void setHighScore(int v)    { highScore    = v; }
-    public void setAvgWpm(int v)       { avgWpm       = v; }
-    public void setPeakWpm(int v)      { peakWpm      = v; }
-    public void setAccuracy(double v)  { accuracy     = v; }
-    public void setErrorCount(int v)   { errorCount   = v; }
-    public void setTimePlayed(String v){ timePlayed   = v; }
-    public void setCurrentLevel(int v) { currentLevel = v; }
-    public void setWordsTyped(int v)   { wordsTyped   = v; }
+    // Per-level setters (level is 1-based)
+    public void setHighScore(int level, int v)    { highScore[level - 1]  = v; }
+    public void setAvgWpm(int level, int v)       { avgWpm[level - 1]     = v; }
+    public void setPeakWpm(int level, int v)      { peakWpm[level - 1]    = v; }
+    public void setAccuracy(int level, double v)  { accuracy[level - 1]   = v; }
+    public void setErrorCount(int level, int v)   { errorCount[level - 1] = v; }
+    public void setTimePlayed(int level, String v){ timePlayed[level - 1] = v; }
+    public void setWordsTyped(int level, int v)   { wordsTyped[level - 1] = v; }
 
     // UI construction
     private void buildUI() {
@@ -87,46 +89,58 @@ public class StatsScreen implements Screen {
         btn.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
         btn.setToolTipText("Back");
         btn.setActionCommand("Back");
-        btn.addActionListener(this); // handle back button click in actionPerformed
+        btn.addActionListener(this);
         return btn;
     }
 
-    /** Splits the screen into left (stats) and right (avatar) halves. */
+    /** Splits the screen: left = tabbed stats, right = avatar. */
     private JPanel buildBody() {
         JPanel body = new JPanel(new GridLayout(1, 2));
         body.setOpaque(false);
-        body.add(buildStatsPanel());
+        body.add(buildTabbedStats());
         body.add(buildAvatarPanel());
         return body;
     }
 
-    // Left panel: stat rows 
-    private JPanel buildStatsPanel() {
+    /** JTabbedPane with one tab per level. */
+    private JTabbedPane buildTabbedStats() {
+        JTabbedPane tabs = new JTabbedPane();
+        tabs.setBackground(TAB_BG);
+        tabs.setForeground(Color.WHITE);
+        tabs.setFont(new Font("SansSerif", Font.BOLD, 13));
+        tabs.setOpaque(true);
+
+        for (int i = 0; i < LEVELS; i++) {
+            tabs.addTab("Level " + (i + 1), buildStatsPanel(i));
+        }
+        return tabs;
+    }
+
+    /** Stat rows for one level (levelIndex is 0-based). */
+    private JPanel buildStatsPanel(int levelIndex) {
         JPanel panel = new JPanel(null);
-        panel.setOpaque(false);
+        panel.setBackground(TAB_SELECTED);
 
         String[][] rows = {
-            { "High Score:",                   String.valueOf(highScore)       },
-            { "Average WPM:",                  avgWpm + " wpm"                 },
-            { "Peak WPM:",                     peakWpm + " wpm"                },
-            { "Overall Accuracy%:",            accuracy + "%"                  },
-            { "Error Count:",                  String.valueOf(errorCount)      },
-            { "Total Time Played:",            timePlayed                      },
-            { "Current Level:",                "Level " + currentLevel         },
-            { "Words Correctly Typed:",  String.valueOf(wordsTyped)      },
+            { "High Score:",              String.valueOf(highScore[levelIndex])  },
+            { "Average WPM:",             avgWpm[levelIndex] + " wpm"           },
+            { "Peak WPM:",                peakWpm[levelIndex] + " wpm"          },
+            { "Overall Accuracy:",        accuracy[levelIndex] + "%"            },
+            { "Error Count:",             String.valueOf(errorCount[levelIndex]) },
+            { "Total Time Played:",       timePlayed[levelIndex]                },
+            { "Words Correctly Typed:",   String.valueOf(wordsTyped[levelIndex]) },
         };
 
-        int startY = 8;
-        int rowH   = 42;
+        int startY = 14;
+        int rowH   = 44;
         int lblW   = 155;
         int boxX   = lblW + 14;
-        int boxW   = 160;
+        int boxW   = 150;
         int rowHt  = 28;
 
         for (int i = 0; i < rows.length; i++) {
             int y = startY + i * rowH;
 
-            // Label
             JLabel lbl = new JLabel(rows[i][0]);
             lbl.setForeground(Color.WHITE);
             lbl.setFont(new Font("SansSerif", Font.PLAIN, 13));
@@ -135,7 +149,6 @@ public class StatsScreen implements Screen {
             lbl.setBounds(4, y, lblW, rowHt);
             panel.add(lbl);
 
-            // Value box (rounded grey rectangle)
             JLabel val = makeValueBox(rows[i][1]);
             val.setBounds(boxX, y, boxW, rowHt);
             panel.add(val);
@@ -202,40 +215,37 @@ public class StatsScreen implements Screen {
         }
     }
 
-// SCREEN INTERGACE METHODS -----------------------------------------------
-    // TODO: Action listener
+// SCREEN INTERFACE METHODS -----------------------------------------------
     @Override
     public void actionPerformed(ActionEvent e) {
         if (e.getActionCommand() != null) {
-            // move from this class to the next screen based on the button clicked
             System.out.println("→ " + e.getActionCommand());
             this.moveToNextScreen(e.getActionCommand());
         }
     }
-    //TODO: public showScreen
+
     @Override
     public void showScreen() {
         if (statsFrame == null) {
-            statsFrame = new JFrame("Staying Alive - Player Menu");
+            statsFrame = new JFrame("Staying Alive - Stats");
             statsFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         }
         statsFrame.setSize(NavigationControl.screenW, NavigationControl.screenH);
         statsFrame.getContentPane().removeAll();
-        
         loadAvatar("global/download.png");
         buildUI();
-        //gameStoreFrame.setContentPane(screen);
         statsFrame.setLocationRelativeTo(null);
         statsFrame.setVisible(true);
+        NavigationControl.attachFontScaler(statsFrame);
     }
-    // TODO: public moveToNextScreen
+
     @Override
     public void moveToNextScreen(String screenToMoveTo) {
         if (screenToMoveTo.equals("Back")) {
             NavigationControl.goBack();
         }
     }
-    // TODO: public getFrame
+
     @Override
-    public JFrame getFrame() {return this.statsFrame;}
+    public JFrame getFrame() { return this.statsFrame; }
 }
