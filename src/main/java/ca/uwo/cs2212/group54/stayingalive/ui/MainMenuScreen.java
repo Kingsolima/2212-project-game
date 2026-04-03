@@ -11,28 +11,9 @@ package ca.uwo.cs2212.group54.stayingalive.ui;
  * @author Fardin Abbassi
  */
 
-import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.Component;
-import java.awt.Dimension;
-import java.awt.FlowLayout;
-import java.awt.Font;
-import java.awt.GridBagLayout;
-import java.awt.Image;
-import java.awt.event.ActionEvent;
-
-import javax.swing.BorderFactory;
-import javax.swing.JDialog;
-import javax.swing.Box;
-import javax.swing.BoxLayout;
-import javax.swing.ImageIcon;
-import javax.swing.JButton;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JPasswordField;
-import javax.swing.SwingConstants;
+import java.awt.*;
+import java.awt.event.*;
+import javax.swing.*;
 
 
 public class MainMenuScreen implements Screen {
@@ -55,7 +36,19 @@ public class MainMenuScreen implements Screen {
     private JLabel subLabel;
     private JLabel credits;
     
-    /** ADD DESCRIPTION HERE
+
+    // ── Navigation Control ────
+    /**
+     * General navigation for both keyboard and button presses.
+     * @param command The name of the command used
+     * @author Fardin Abbassi
+     */
+    private void navigateTo(String command) {
+        // move from this class to the next screen based on the button clicked
+            System.out.println("to " + command);
+            this.moveToNextScreen(command);
+    }
+    /** 
      * Handle button clicks on main menu
      * <p>
      * Exit button exits application, login button moves to login screen, 
@@ -63,19 +56,66 @@ public class MainMenuScreen implements Screen {
      * parental control button moves to parental control screen.
      * <p>
      * 
-     * @param e
+     * @param e ActionEvent of the button pressed
+     * @author Fardin Abbassi
      */
-    // 
 	@Override
 	public void actionPerformed(ActionEvent e) {
         // Switch to login screen if login button is pressed
-        if (e.getActionCommand().equals("Login")) {this.moveToNextScreen("Login");}
-        // Switch to tutorial screen if tutorial button is pressed
-        else if (e.getActionCommand().equals("Tutorial")) {this.moveToNextScreen("Tutorial");}
-        // Switch to parental control screen if parental control button is pressed
-        else if (e.getActionCommand().equals("Parental Controls")) {this.moveToNextScreen("Parental Controls");}
+        if (e.getActionCommand() != null) { navigateTo(e.getActionCommand()); }
+    }
+    /**
+     * Helper function to add navigation to key inputs to the given target component.
+     * @param target Target JComponent to add key inputs to
+     * @author Fardin Abbassi
+     */
+    private void addKeyShortcuts(JComponent target) {
+        // Tutorial: T
+        addKeyShortcut(target, KeyEvent.VK_T, new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) { navigateTo("Tutorial"); }
+        });
+        
+        // Login: L
+        addKeyShortcut(target, KeyEvent.VK_L, new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) { navigateTo("Login"); }
+        });
+
+        // Parental Controls: P
+        addKeyShortcut(target, KeyEvent.VK_P, new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) { navigateTo("Parental Controls"); }
+        });
+
+        // Exit App: Esc
+        addKeyShortcut(target, KeyEvent.VK_ESCAPE, new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) { navigateTo("Exit"); }
+        });
+    }
+    /**
+     * Add key press functionality to a given key.
+     * 
+     * @param target The component to give the navigation logic to
+     * @param keyCode The key to give logic to
+     * @param action The logic to give
+     * @author Fardin Abbassi
+     */
+    @Override
+    public void addKeyShortcut(JComponent target, int keyCode, Action action) {
+        InputMap im = target.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW);
+        ActionMap am = target.getActionMap();
+        String key = "shortcut_" + keyCode;
+        im.put(KeyStroke.getKeyStroke(keyCode, 0), key);
+        am.put(key, action);
     }
 
+
+    /**
+     * Helper function for building UI by initializing all the components and putting them all together.
+     * @author Omar Soliman
+     */
     private void buildUI() {
         // BorderLayout: title NORTH, logo CENTER (scales), subtitle+buttons+credits SOUTH
         JPanel mainPanel = new JPanel(new BorderLayout());
@@ -146,8 +186,9 @@ public class MainMenuScreen implements Screen {
         mainMenuFrame.setContentPane(mainPanel);
     }
 
-    /** ADD DESCRIPTION HERE
-     *
+    /**
+     * Call on the buildUI helper function and set up the frame.
+     * @author Omar Soliman
      */
     @Override
     public void showScreen() {
@@ -157,11 +198,16 @@ public class MainMenuScreen implements Screen {
         mainMenuFrame.setBackground(backgroundPurple);
         mainMenuFrame.setVisible(true);
         mainMenuFrame.setLocationRelativeTo(null);
+        addKeyShortcuts((JPanel) mainMenuFrame.getContentPane());
     }
 
-    /** ADD DESCRIPTION HERE
+    /** 
+     * Moves to the specified screen.
+     * <p>
+     * For each of the buttons, the screen shifts to that specified screen. 
+     * In the case of the escape button being pressed, the user is given an option pane to choose to exit the app.
      * @param screenToMoveTo
-     * @return Screen
+     * @author Fardin Abbassi
      */
     @Override
     public void moveToNextScreen(String screenToMoveTo) {
@@ -222,10 +268,26 @@ public class MainMenuScreen implements Screen {
             dialog.setLocationRelativeTo(mainMenuFrame);
             dialog.setVisible(true);
         }
+        // Give the user the option to leave the app
+        else if (screenToMoveTo.equals("Exit")) {
+            int response = JOptionPane.showConfirmDialog(
+                mainMenuFrame,
+                "Are you sure you want to exit Staying Alive?",
+                "Exit Confirmation",
+                JOptionPane.YES_NO_OPTION,
+                JOptionPane.QUESTION_MESSAGE
+            );
+            if (response == JOptionPane.YES_OPTION) {
+                System.exit(0);
+            }
+        }
+            
     }
 
-    /** ADD DESCRIPTION HERE
-     * 
+    /** 
+     * Gets the JFrame of the screen,
+     * @return The frame of the main menu screen
+     * @author Fardin Abbassi
      */
     @Override
     public JFrame getFrame() {return mainMenuFrame;}

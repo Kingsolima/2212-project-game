@@ -1,25 +1,10 @@
 package ca.uwo.cs2212.group54.stayingalive.ui;
 
-import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.Cursor;
-import java.awt.Dimension;
-import java.awt.Font;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
-import java.awt.GridLayout;
-import java.awt.Image;
-import java.awt.RenderingHints;
-import java.awt.event.ActionEvent;
+import java.awt.*;
+import java.awt.event.*;
 import java.io.File;
 
-import javax.swing.BorderFactory;
-import javax.swing.ImageIcon;
-import javax.swing.JButton;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.SwingConstants;
+import javax.swing.*;
 
 /**
  * StatsScreen – displays per-user statistics with the player's avatar.
@@ -218,6 +203,10 @@ public class StatsScreen implements Screen {
         }
     }
 
+    /**
+     * 
+     */
+
 // SCREEN INTERFACE METHODS -----------------------------------------------
     /**
      * Clicking on back button will call to move back to player screen.
@@ -229,6 +218,22 @@ public class StatsScreen implements Screen {
             System.out.println("→ " + e.getActionCommand());
             this.moveToNextScreen(e.getActionCommand());
         }
+    }
+    /**
+     * Add key press functionality to the "Escape" key to handle logic
+     * 
+     * @param target The component to give the navigation logic to
+     * @param keyCode The key to give logic to
+     * @param action The logic to give
+     * @author Fardin Abbassi
+     */
+    @Override
+    public void addKeyShortcut(JComponent target, int keyCode, Action action) {
+        InputMap im = target.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW);
+        ActionMap am = target.getActionMap();
+        String key = "shortcut_" + keyCode;
+        im.put(KeyStroke.getKeyStroke(keyCode, 0), key);
+        am.put(key, action);
     }
     /**
      * Builds statistics screen using the helper methods above.
@@ -251,6 +256,11 @@ public class StatsScreen implements Screen {
         buildUI();
         statsFrame.setLocationRelativeTo(null);
         statsFrame.setVisible(true);
+
+        addKeyShortcut((JPanel)statsFrame.getContentPane(),KeyEvent.VK_ESCAPE, new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) { moveToNextScreen("Back"); }
+        });
     }
     /**
      * Move from statistics screen back to the previous screen.

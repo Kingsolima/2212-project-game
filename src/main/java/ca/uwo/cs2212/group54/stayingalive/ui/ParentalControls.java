@@ -1,32 +1,13 @@
+// TODO: ADD JAVADOC COMMENTS
 package ca.uwo.cs2212.group54.stayingalive.ui;
 
-import java.awt.BorderLayout;
-import java.awt.CardLayout;
-import java.awt.Color;
-import java.awt.Cursor;
-import java.awt.Dimension;
-import java.awt.FlowLayout;
-import java.awt.Font;
-import java.awt.Image;
-import java.awt.event.ActionEvent;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
+import java.awt.*;
+import java.awt.event.*;
 import java.io.File;
 import java.util.ArrayList;
 
-import javax.swing.BorderFactory;
-import javax.swing.JDialog;
-import javax.swing.ImageIcon;
-import javax.swing.JButton;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
-import javax.swing.JPasswordField;
-import javax.swing.JScrollPane;
-import javax.swing.JTable;
-import javax.swing.JTextField;
-import javax.swing.table.DefaultTableModel;
-import javax.swing.table.JTableHeader;
+import javax.swing.*;
+import javax.swing.table.*;
 
 import ca.uwo.cs2212.group54.stayingalive.accounts.Account;
 import ca.uwo.cs2212.group54.stayingalive.accounts.LevelStatistic;
@@ -563,6 +544,13 @@ public class ParentalControls implements Screen {
         return mainPanel;
     }
 
+    /**
+     * 
+     */
+    private void addKeyShortcuts() {
+        // TODO: Keep key shortcuts only available when the given panel is viewable
+    }
+
 
 
     // Constructor
@@ -610,6 +598,22 @@ public class ParentalControls implements Screen {
                 break;
         }
     }
+    /**
+     * Add key press functionality to the given key to handle logic
+     * 
+     * @param target The component to give the navigation logic to
+     * @param keyCode The key to give logic to
+     * @param action The logic to give
+     * @author Fardin Abbassi
+     */
+    @Override
+    public void addKeyShortcut(JComponent target, int keyCode, Action action) {
+        InputMap im = target.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW);
+        ActionMap am = target.getActionMap();
+        String key = "shortcut_" + keyCode;
+        im.put(KeyStroke.getKeyStroke(keyCode, 0), key);
+        am.put(key, action);
+    }
     
     /**
      * Display the screen by building top bar and the main content panels,
@@ -637,6 +641,10 @@ public class ParentalControls implements Screen {
         // Snap frame to center and show
         parentalControlsFrame.setLocationRelativeTo(null);
         parentalControlsFrame.setVisible(true);
+        addKeyShortcut((JPanel)parentalControlsFrame.getContentPane(),KeyEvent.VK_ESCAPE, new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) { moveToNextScreen("Back"); }
+        });
     }
 
     /**
