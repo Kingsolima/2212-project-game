@@ -240,10 +240,9 @@ public class StatsScreen implements Screen {
      */
     @Override
     public void showScreen() {
-        WindowUtils.addSaveOnClose(statsFrame); // data is saved when window is closed
         if (statsFrame == null) {
             statsFrame = new JFrame("Staying Alive - Player Menu");
-            statsFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+            WindowUtils.addSaveOnClose(statsFrame); // data is saved when window is closed
         }
         statsFrame.setSize(NavigationControl.screenW, NavigationControl.screenH);
         statsFrame.getContentPane().removeAll();

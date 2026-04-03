@@ -285,10 +285,9 @@ public class PlayerScreen implements Screen {
     //TODO: public showScreen
     @Override
     public void showScreen() {
-        WindowUtils.addSaveOnClose(playerFrame); // data is saved when window is closed
         if (playerFrame == null) {
             playerFrame = new JFrame("Staying Alive - Player Menu");
-            playerFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
+            WindowUtils.addSaveOnClose(playerFrame); // data is saved when window is closed
         }
         playerFrame.setSize(NavigationControl.screenW, NavigationControl.screenH);
         playerFrame.getContentPane().removeAll();

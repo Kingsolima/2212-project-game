@@ -54,7 +54,6 @@ public class LoginScreen implements Screen{
      */
     @Override
     public void showScreen() {
-        WindowUtils.addSaveOnClose(loginFrame); // data is saved when window is closed
         // Clear frame
         loginFrame.getContentPane().removeAll();
         loginFrame.getContentPane().setLayout(null);
