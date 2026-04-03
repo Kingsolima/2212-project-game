@@ -48,7 +48,8 @@ public class AccountManagement {
     }
 
     public boolean checkMasterPass(String masterPass) {
-        String pass = new String(parental.getMasterPass());
+        String pass = parental.getMasterPass();
+        if (pass == null) return false;
         return pass.equals(masterPass);
     }
 
