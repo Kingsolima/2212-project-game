@@ -230,7 +230,7 @@ public class Gameplay {
             
             Level_status status = isLevelCleared() ? Level_status.COMPLETED : Level_status.UNLOCKED;
             
-            int newHighscore = Math.max(score, stats.getHighScore());
+            int newHighscore = Math.max(score, stats.getHighscore());
             int newAttempts = stats.getAttempts() + 1;
             stats.updateStats(calculateWPM(), calculateWPM(), mistakes, newHighscore, newAttempts, accuracy, status);
             this.player.setStats(stats);
