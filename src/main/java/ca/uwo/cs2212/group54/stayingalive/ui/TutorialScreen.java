@@ -29,7 +29,7 @@ public class TutorialScreen implements Screen {
     private final static Color TEXT_WHITE          = Color.WHITE;
     private final static Color DOT_ACTIVE          = Color.WHITE;
     private final static Color DOT_INACTIVE        = new Color(120, 100, 150);
-    private final static Color ARROW_COLOR         = new Color(40, 40, 40);
+    private final static Color ARROW_COLOR         = new Color(40, 40, 40);         // TODO: Should we remove this?
 
     // Tutorial pages: each entry is { title, body }
     private final static String[][] PAGES = {
@@ -69,16 +69,6 @@ public class TutorialScreen implements Screen {
             + "Nailing words earns you <b>points</b> and builds your score.<br><br>"
             + "<b>Powerups</b> show up mid-game. Type them fast to grab<br>"
             + "bonuses like extra time or health restored."
-            + "</div></html>"
-        },
-        {
-            "Keyboard Shortcuts",
-            "<html><div style='text-align:center;'>"
-            + "Navigate the game quickly with these shortcuts:<br><br>"
-            + "<b>T</b> &nbsp;&mdash;&nbsp; Open the <b>Tutorial</b><br><br>"
-            + "<b>P</b> &nbsp;&mdash;&nbsp; Open <b>Parental Controls</b><br><br>"
-            + "<b>L</b> &nbsp;&mdash;&nbsp; Go to the <b>Login</b> screen<br><br>"
-            + "Use these from the main menu to jump straight where you need to go."
             + "</div></html>"
         }
     };
@@ -120,7 +110,7 @@ public class TutorialScreen implements Screen {
                 }
                 break;
             case "Return":
-                this.moveToNextScreen("back");
+                this.moveToNextScreen("Back");
                 break;
         }
     }
@@ -146,6 +136,23 @@ public class TutorialScreen implements Screen {
         rightArrowButton.setVisible(currentPage < PAGES.length - 1);
 
         tutorialFrame.repaint();
+    }
+
+    /**
+     * Add key press functionality to the given key to handle logic
+     * 
+     * @param target The component to give the navigation logic to
+     * @param keyCode The key to give logic to
+     * @param action The logic to give
+     * @author Fardin Abbassi
+     */
+    @Override
+    public void addKeyShortcut(JComponent target, int keyCode, Action action) {
+        InputMap im = target.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW);
+        ActionMap am = target.getActionMap();
+        String key = "shortcut_" + keyCode;
+        im.put(KeyStroke.getKeyStroke(keyCode, 0), key);
+        am.put(key, action);
     }
 
     /**
@@ -244,6 +251,10 @@ public class TutorialScreen implements Screen {
         tutorialFrame.setBackground(BACKGROUND_PURPLE);
         tutorialFrame.setVisible(true);
         tutorialFrame.setLocationRelativeTo(null);
+        addKeyShortcut((JPanel)tutorialFrame.getContentPane(),KeyEvent.VK_ESCAPE, new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) { moveToNextScreen("Back"); }
+        });
     }
 
     /**
@@ -269,14 +280,14 @@ public class TutorialScreen implements Screen {
 
     /**
      * Moves to another screen.
-     * "back" navigates to the main menu (screen index 0).
+     * "Back" navigates to the main menu.
      *
      * @param screenToMoveTo the target screen identifier
      * @author Omar Soliman
      */
     @Override
     public void moveToNextScreen(String screenToMoveTo) {
-        if (screenToMoveTo.equals("back")) {
+        if (screenToMoveTo.equals("Back")) {
             NavigationControl.goBack();
         }
     }
