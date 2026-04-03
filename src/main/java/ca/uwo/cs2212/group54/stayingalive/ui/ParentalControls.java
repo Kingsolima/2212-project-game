@@ -474,7 +474,6 @@ public class ParentalControls implements Screen {
         // Set up frame
         if (parentalControlsFrame == null) {
             parentalControlsFrame = new JFrame("Staying Alive - Parental Controls");
-            WindowUtils.addSaveOnClose(parentalControlsFrame); // data is saved when window is closed
         }
         parentalControlsFrame.setSize(NavigationControl.screenW, NavigationControl.screenH);
         parentalControlsFrame.getContentPane().removeAll();

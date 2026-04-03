@@ -27,6 +27,10 @@ public class NavigationControl {
     public final static int screenW = 800; //sets the screen width
     public final static int screenH = 450; //sets the screen height
 
+    // Other
+    private static long startTime; // for checking (start - end) time to update player playtime
+    private static long endTime;
+
     /**
      * Updates the current screen by showing it and setting its size to defined dimensions
      * @author Fardin Abbassi
@@ -100,6 +104,26 @@ public class NavigationControl {
         accountManager = new AccountManagement(new Parental());
         setCurrentScreen(0);
     }
+
+    /**
+     * This method is exclusively used when a player logs in. It serves the purpose of
+     *  recording the total duration of playtime (for each player).
+     */
+    public static void startTimer() {
+        startTime = System.currentTimeMillis();
+    }
+
+    /**
+     * This method is exclusively used when a player logs in. It serves the purpose of
+     *  recording the total duration of playtime (for each player).
+     */
+    public static void endTimer() {
+        endTime = System.currentTimeMillis();
+    }
+
+    // Getters
+    public static long getStartTime() { return startTime; }
+    public static long getEndTime() { return endTime; }
 
     // Use as driver for application
     public static void main(String[] args) {

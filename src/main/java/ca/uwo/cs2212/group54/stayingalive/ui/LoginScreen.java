@@ -13,6 +13,8 @@ import javax.swing.JLabel;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 
+import ca.uwo.cs2212.group54.stayingalive.accounts.AccountManagement;
+
 public class LoginScreen implements Screen{
     // Login Frame
     private JFrame loginFrame = new JFrame("Staying Alive - Login");
@@ -43,8 +45,14 @@ public class LoginScreen implements Screen{
         // Only close login screen if exitbutton or proper login
         if(e.getSource() == loginButton) {
             // Until proper implementation of login, just move to player menu screen
-            boolean correctLogin = NavigationControl.getAccountManager().checkUserLogin(usernameField.getText(), new String(passwordField.getPassword()));
-            if (correctLogin) this.moveToNextScreen("Player"); // test with player screen later
+            String username = usernameField.getText();
+            String password = new String(passwordField.getPassword());
+            boolean correctLogin = NavigationControl.getAccountManager().checkUserLogin(username, password);
+            if (correctLogin) {
+                AccountManagement.setCurrentAccount(NavigationControl.getAccountManager().getParental().getAccount(username));
+                NavigationControl.startTimer();
+                this.moveToNextScreen("Player"); // test with player screen later
+            }
             else messageLabel.setVisible(true);
         }
     }

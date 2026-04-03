@@ -4,6 +4,7 @@ import java.util.Objects;
 
 public class AccountManagement {
     Parental parental;
+    private static Account currentAccount; // To check which account is currently logged in
 
     public static void main(String[] args) {
         System.out.println("================");
@@ -53,6 +54,14 @@ public class AccountManagement {
 
     public Parental getParental() {
         return parental;
+    }
+
+    public static Account getCurrentAccount() {
+        return currentAccount;
+    }
+
+    public static void setCurrentAccount(Account currentAccount) {
+        AccountManagement.currentAccount = currentAccount;
     }
 
 }
