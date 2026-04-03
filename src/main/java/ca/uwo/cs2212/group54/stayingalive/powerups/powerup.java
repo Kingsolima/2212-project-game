@@ -1,5 +1,7 @@
 package ca.uwo.cs2212.group54.stayingalive.powerups;
 
+import ca.uwo.cs2212.group54.stayingalive.sprites.Sprite;
+
 /**
  * Represents a purchasable power-up in the game store.
  * Each power-up has a name, price, description, type, and sprite.
@@ -105,7 +107,6 @@ public class Powerup implements StoreItem {
      *
      * @return the description text
      */
-    @Override
     public String getDescription() {
         return description;
     }
@@ -115,7 +116,6 @@ public class Powerup implements StoreItem {
      *
      * @return true if purchased, false otherwise
      */
-    @Override
     public boolean isBought() {
         return bought;
     }
@@ -152,7 +152,6 @@ public class Powerup implements StoreItem {
     /**
      * Unequips this power-up and clears any active cooldown state.
      */
-    @Override
     public void unequip() {
         equipped = false;
         onCooldown = false;
@@ -296,3 +295,4 @@ public class Powerup implements StoreItem {
         }
         return name.equals(other.name) && type == other.type;
     }
+}
