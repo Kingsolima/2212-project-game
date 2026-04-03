@@ -15,6 +15,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.io.File;
+import java.util.ArrayList;
 
 import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
@@ -28,6 +29,9 @@ import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.JTableHeader;
+
+import ca.uwo.cs2212.group54.stayingalive.accounts.Account;
+import ca.uwo.cs2212.group54.stayingalive.accounts.LevelStatistic;
 
 public class ParentalControls implements Screen {
     // Main Frame
@@ -70,7 +74,7 @@ public class ParentalControls implements Screen {
     private void signUpNewUser() {
         String newUsername = usernameField.getText().trim();
         String newPassword = new String(passwordField.getPassword());
-        
+        NavigationControl.getAccountManager().getParental().createAccount(newUsername, newPassword);
         // TODO: Use Parental.java to handle sign ups
         refreshPlayerTable(); // show new account
     }
@@ -191,6 +195,17 @@ public class ParentalControls implements Screen {
             @Override
             public boolean isCellEditable(int row, int column) {return false;} // make table non-editable
         };
+
+        // Add data to table
+        ArrayList<Account> players = NavigationControl.getAccountManager().getParental().getAccounts();
+        for (Account player: players) {
+            Object[] row = new Object[3];
+            row[0] = player.getUsername();
+            LevelStatistic[] stats = player.getAllLevelStats();
+            row[1] = stats[player.getProgress().getCurrentLevel()].getHighscore();
+            row[2] = stats[player.getProgress().getCurrentLevel()].getAccuracy();
+            playerTableModel.addRow(row);
+        }
 
         playerTable = new JTable(playerTableModel);
         playerTable.setBackground(TABLE_COLOR);
