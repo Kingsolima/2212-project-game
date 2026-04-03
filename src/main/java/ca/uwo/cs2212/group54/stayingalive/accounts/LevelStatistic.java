@@ -92,6 +92,10 @@ public class LevelStatistic {
         return highscore;
     }
 
+    public int getHighScore() {
+        return highscore;
+    }
+
     public double getAccuracy() {
         return accuracy;
     }

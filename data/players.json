@@ -1,1 +1,50 @@
-[]
+[ {
+  "username" : "omar",
+  "password" : "bob",
+  "coins" : 0,
+  "stats" : [ {
+    "highScore" : 0,
+    "level_data" : {
+      "section" : 1,
+      "level_num" : 1
+    },
+    "avg_wpm" : 0,
+    "peak_wpm" : 0,
+    "mistakes" : 0,
+    "highscore" : 0,
+    "attempts" : 0,
+    "accuracy" : 0.0,
+    "status" : "LOCKED"
+  }, {
+    "highScore" : 0,
+    "level_data" : {
+      "section" : 1,
+      "level_num" : 1
+    },
+    "avg_wpm" : 0,
+    "peak_wpm" : 0,
+    "mistakes" : 0,
+    "highscore" : 0,
+    "attempts" : 0,
+    "accuracy" : 0.0,
+    "status" : "LOCKED"
+  }, {
+    "highScore" : 0,
+    "level_data" : {
+      "section" : 1,
+      "level_num" : 1
+    },
+    "avg_wpm" : 0,
+    "peak_wpm" : 0,
+    "mistakes" : 0,
+    "highscore" : 0,
+    "attempts" : 0,
+    "accuracy" : 0.0,
+    "status" : "LOCKED"
+  } ],
+  "progress" : {
+    "current_level" : 1,
+    "completed_levels" : [ false, false, false ],
+    "playtime" : 10.87
+  }
+} ]

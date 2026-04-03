@@ -29,7 +29,7 @@ public class WindowUtils {
             @Override
             public void windowClosing(WindowEvent e) {
                 activateSaveSequence();
-                frame.dispose(); 
+                NavigationControl.setCurrentScreen(0);
             }
         });
     }
