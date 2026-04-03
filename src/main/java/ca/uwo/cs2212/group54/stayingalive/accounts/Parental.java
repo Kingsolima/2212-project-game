@@ -61,7 +61,7 @@ public class Parental {
         return postCreation - preCreation == 1; // successful account creation and adding to array
     }
 
-    private void resetPassword(String username, String newPass) {
+    public void resetPassword(String username, String newPass) {
         for (Account account: accounts) {
             if (account.getUsername().equals(username)) {
                 account.setPassword(newPass);

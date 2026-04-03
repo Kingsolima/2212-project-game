@@ -22,6 +22,7 @@ import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 import javax.swing.JScrollPane;
@@ -84,6 +85,18 @@ public class ParentalControls implements Screen {
      */
     private void resetStats() {
         NavigationControl.getAccountManager().getParental().resetStats();
+    }
+
+    /**
+     * Checks the selected row and resets the password to a password that's provided
+     */
+    private void resetPassword() {
+        int selectedRow = playerTable.getSelectedRow();
+        if (selectedRow != -1) {
+            String username = (String)playerTableModel.getValueAt(selectedRow,0);
+            String newPassword = JOptionPane.showInputDialog(null, "Enter new username:");
+            NavigationControl.getAccountManager().getParental().resetPassword(username, newPassword);
+        }
     }
 
     /**
@@ -272,14 +285,14 @@ public class ParentalControls implements Screen {
         resetStatsButton.setActionCommand("Reset Stats");
         resetStatsButton.addActionListener(this);
 
-        resetPasswordButton = new JButton("Reset Passwords");
+        resetPasswordButton = new JButton("Reset Password");
         resetPasswordButton.setFont(new Font("SansSerif", Font.BOLD, 12));
         resetPasswordButton.setForeground(Color.WHITE);
         resetPasswordButton.setBackground(new Color(200, 120, 60));
         resetPasswordButton.setBorderPainted(false);
         resetPasswordButton.setFocusPainted(false);
         resetPasswordButton.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-        resetPasswordButton.setActionCommand("Reset Passwords");
+        resetPasswordButton.setActionCommand("Reset Password");
         resetPasswordButton.addActionListener(this);
 
         buttonPanel.add(resetStatsButton);
@@ -424,7 +437,7 @@ public class ParentalControls implements Screen {
                 signUpNewUser();
                 break;
             case "Reset Password":
-                // set all user's passwords to CompSci2212
+                resetPassword();
                 break;
             case "Reset Stats":
                 resetStats(); // reset all player stats to 0s
