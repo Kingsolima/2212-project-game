@@ -78,6 +78,14 @@ public class ParentalControls implements Screen {
         // TODO: Use Parental.java to handle sign ups
         refreshPlayerTable(); // show new account
     }
+
+    /** Calls Parental.java's resetStats() method to clear all user stats to 0s.
+     * 
+     */
+    private void resetStats() {
+        NavigationControl.getAccountManager().getParental().resetStats();
+    }
+
     /**
      * Refresh table data after changes to accounts.
      * 
@@ -419,9 +427,8 @@ public class ParentalControls implements Screen {
                 // set all user's passwords to CompSci2212
                 break;
             case "Reset Stats":
-                // set all user stats in the database to 0s
+                resetStats(); // reset all player stats to 0s
                 break;
-
             case "Show All Players":
                 showAllPlayers();
                 // show the all players panel

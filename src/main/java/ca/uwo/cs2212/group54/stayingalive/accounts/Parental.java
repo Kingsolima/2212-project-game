@@ -81,7 +81,7 @@ public class Parental {
         return null;
     }
 
-    private void resetStats() {
+    public void resetStats() {
         // resets all statistic data for all players
         for (Account account: accounts) {
             account.clearStats();
