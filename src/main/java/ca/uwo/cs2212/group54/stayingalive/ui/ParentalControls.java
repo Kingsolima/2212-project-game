@@ -86,11 +86,11 @@ public class ParentalControls implements Screen {
      * 
      * @author Fardin Abbassi
      */
+    // TODO: make sure the player table refreshes when signin up a new player
     private void refreshPlayerTable() {
-        if (playerTable != null) {
-            playerTable.revalidate();
-            playerTable.repaint();
-        }
+        playerTable.revalidate();
+        playerTable.repaint();
+        
     }
     /**
      * Helper function to switch to the "Show All Players" panel and update tab button colours.
@@ -101,7 +101,9 @@ public class ParentalControls implements Screen {
         allPlayersPanel.setVisible(true);
         createAccountPanel.setVisible(false);
 
-        if (showAllPlayersTab != null) {showAllPlayersTab.setBackground(PICKED_TAB);}
+        if (showAllPlayersTab != null) {
+            showAllPlayersTab.setBackground(PICKED_TAB);
+        }
         if (createAccountTab != null) {createAccountTab.setBackground(BUTTON_BG);}
     }
     /**
@@ -411,7 +413,7 @@ public class ParentalControls implements Screen {
                 moveToNextScreen(command);
                 break;
             case "Sign Up":
-                // Add user to database
+                signUpNewUser();
                 break;
             case "Reset Password":
                 // set all user's passwords to CompSci2212
