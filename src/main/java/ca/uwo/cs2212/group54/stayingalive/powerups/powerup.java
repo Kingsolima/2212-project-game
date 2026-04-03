@@ -1,4 +1,4 @@
-package ca.uwo.cs2212.group54.stayingalive.store;
+package ca.uwo.cs2212.group54.stayingalive.powerups;
 
 /**
  * Represents a purchasable power-up in the game store.

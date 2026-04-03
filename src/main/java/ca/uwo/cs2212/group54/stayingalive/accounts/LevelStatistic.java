@@ -63,7 +63,6 @@ public class LevelStatistic {
         return this.levelData;
     }
 
-    public int getHighScore() { return this.highscore; }
     public int getAttempts()  { return this.attempts;  }
 
     public void clearStatistics() {
@@ -86,12 +85,9 @@ public class LevelStatistic {
         return mistakes;
     }
 
+    @JsonProperty("highscore")
     public int getHighscore() {
         return highscore;
-    }
-
-    public int getAttempts() {
-        return attempts;
     }
 
     public double getAccuracy() {
