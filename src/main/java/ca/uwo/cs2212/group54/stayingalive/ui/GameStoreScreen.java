@@ -42,7 +42,7 @@ import javax.swing.SwingConstants;
  *
  * Layout:
  *   - Purple background matching the app theme
- *   - Top bar: "Game Store" title left | score pill + back button right
+ *   - Top bar: "Game Store" title left | coin pill + back button right
  *   - Left half: player avatar centred, owned power-up badges underneath
  *   - Right half: scrollable card list of purchasable items with Buy buttons
  */
@@ -72,33 +72,33 @@ public class GameStoreScreen implements Screen {
     }
 
     // ── Fields ────────────────────────────────────────────────────────────
-    private       int            playerScore;
+    private       int            playerCoins;
     private       Image          avatarImage;
     private final List<StoreItem> items = new ArrayList<>();
     private       JFrame         gameStoreFrame;
 
-    // Score pill label so we can update it after a purchase
-    private JLabel scorePill;
+    // Coin pill label so we can update it after a purchase
+    private JLabel coinPill;
 
     // Owned-powerup badges so we can refresh counts
     private final List<JLabel> badgeLabels = new ArrayList<>();
 
     // ── Constructors ──────────────────────────────────────────────────────
-    // TODO: Maybe need a way to adjust based on user score
-    public GameStoreScreen(int initialScore) {
-        this.playerScore = initialScore;
+    // TODO: Maybe need a way to adjust based on user coins
+    public GameStoreScreen(int initialCoins) {
+        this.playerCoins = initialCoins;
     }
     public GameStoreScreen() {
         this(0);
     }
 
     // ── Public API ────────────────────────────────────────────────────────
-    public void setPlayerScore(int score) {
-        this.playerScore = score;
-        refreshScorePill();
+    public void setPlayerCoins(int coins) {
+        this.playerCoins = coins;
+        refreshCoinPill();
     }
 
-    public int getPlayerScore() { return playerScore; }
+    public int getPlayerCoins() { return playerCoins; }
 
     // ── Default catalogue ─────────────────────────────────────────────────
     private void initItems() {
@@ -148,7 +148,7 @@ public class GameStoreScreen implements Screen {
         panel.setOpaque(false);
 
         // Score pill
-        scorePill = new JLabel("Score: " + playerScore, SwingConstants.CENTER) {
+        coinPill = new JLabel("Coins: " + playerCoins, SwingConstants.CENTER) {
             @Override protected void paintComponent(Graphics g) {
                 Graphics2D g2 = (Graphics2D) g.create();
                 g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
@@ -158,11 +158,11 @@ public class GameStoreScreen implements Screen {
                 super.paintComponent(g);
             }
         };
-        scorePill.setForeground(GOLD);
-        scorePill.setFont(new Font("SansSerif", Font.BOLD, 13));
-        scorePill.setBorder(BorderFactory.createEmptyBorder(4, 12, 4, 12));
-        scorePill.setOpaque(false);
-        panel.add(scorePill);
+        coinPill.setForeground(GOLD);
+        coinPill.setFont(new Font("SansSerif", Font.BOLD, 13));
+        coinPill.setBorder(BorderFactory.createEmptyBorder(4, 12, 4, 12));
+        coinPill.setOpaque(false);
+        panel.add(coinPill);
 
         panel.add(buildBackButton());
         return panel;
@@ -380,7 +380,7 @@ public class GameStoreScreen implements Screen {
         descLabel.setForeground(new Color(215, 215, 215));
         descLabel.setFont(new Font("SansSerif", Font.PLAIN, 11));
 
-        JLabel costLabel = new JLabel("Cost: " + item.cost + " points");
+        JLabel costLabel = new JLabel("Cost: " + item.cost + " coins");
         costLabel.setForeground(GOLD);
         costLabel.setFont(new Font("SansSerif", Font.BOLD, 11));
 
@@ -432,22 +432,22 @@ public class GameStoreScreen implements Screen {
 
     // ── Purchase logic ────────────────────────────────────────────────────
     private void handlePurchase(StoreItem item) {
-        if (playerScore < item.cost) {
+        if (playerCoins < item.cost) {
             JOptionPane.showMessageDialog(gameStoreFrame,
-                    "You need " + item.cost + " points but only have " + playerScore + ".",
-                    "Not Enough Points", JOptionPane.WARNING_MESSAGE);
+                    "You need " + item.cost + " coins but only have " + playerCoins + ".",
+                    "Not Enough Coins", JOptionPane.WARNING_MESSAGE);
             return;
         }
-        playerScore -= item.cost;
+        playerCoins -= item.cost;
         item.quantity++;
-        refreshScorePill();
+        refreshCoinPill();
         refreshBadges();
         JOptionPane.showMessageDialog(gameStoreFrame,
                 item.name + " purchased!", "Success", JOptionPane.INFORMATION_MESSAGE);
     }
 
-    private void refreshScorePill() {
-        if (scorePill != null) scorePill.setText("Score: " + playerScore);
+    private void refreshCoinPill() {
+        if (coinPill != null) coinPill.setText("Coins: " + playerCoins);
     }
 
     private void refreshBadges() {
@@ -485,7 +485,7 @@ public class GameStoreScreen implements Screen {
             gameStoreFrame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         }
         gameStoreFrame.setSize(NavigationControl.screenW, NavigationControl.screenH);
-        this.playerScore = 0;   //temp screen = new temp(3000); // GameStoreScreen screen = new GameStoreScreen(() -> System.out.println("→ Back"), 3000);
+        this.playerCoins = 0;   //temp screen = new temp(3000); // GameStoreScreen screen = new GameStoreScreen(() -> System.out.println("→ Back"), 3000);
         gameStoreFrame.getContentPane().removeAll();
         loadAvatar("global/download.png");
         initItems();

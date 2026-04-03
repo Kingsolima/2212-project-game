@@ -220,8 +220,8 @@ public class Gameplay {
         if (player != null && levelData != null) {
             LevelStatistic stats = this.player.getLevelStat(levelData.getNumber());
             if (stats == null) {
-                LevelData accLevelData = 
-                    new LevelData(levelData.getNumber(), null, null);
+                ca.uwo.cs2212.group54.stayingalive.accounts.LevelData accLevelData =
+                    new ca.uwo.cs2212.group54.stayingalive.accounts.LevelData(levelData.getNumber(), 1);
                 stats = new LevelStatistic(accLevelData);
             }
             int totalWords = corrects + mistakes;
