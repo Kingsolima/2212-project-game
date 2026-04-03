@@ -4,7 +4,7 @@ package ca.uwo.cs2212.group54.stayingalive.store;
  * Represents a purchasable power-up in the game store.
  * Each power-up has a name, price, description, type, and sprite.
  * A power-up can be purchased, equipped, activated, and placed on cooldown.
- *
+ *  @author Mohamed Ahmed
  * <p> The cooldown duration depends on the type of power-up:</p>
  * 
  *     <li>TIME_STOP: 10 seconds
