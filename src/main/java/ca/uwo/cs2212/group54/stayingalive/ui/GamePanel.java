@@ -37,6 +37,7 @@ public class GamePanel extends JPanel implements ActionListener, KeyListener {
     private static final int textOffset = 20;
     private static final int borderSize = 20;
     private static final int heartImageSize = 80;
+    private static final int padding = 10;
 
     // Gameplay Related
     private static boolean running;
@@ -93,13 +94,28 @@ public class GamePanel extends JPanel implements ActionListener, KeyListener {
                 g.setFont(enemyFont);
                 
                 // FOR HIGHLIGHTING BEHIND IT
-                FontMetrics fontMetrics = g.getFontMetrics(); // Calculate font size
-                String highlight = currentWord.substring(0,enemy.getFirstUnlockedChar());
-                int textWidth = fontMetrics.stringWidth(highlight);
-                int textHeight = fontMetrics.getHeight();
-                g.setColor(Color.GREEN);
-                g.fillRect(textX, textY - fontMetrics.getAscent(),
-                    textWidth, textHeight); // Highlight behind characters
+                if (enemy.equals(gameplay.getInFocus())) {
+                    /*
+                    g.setColor(Color.CYAN);
+                    g.drawRect(enemy.getPositionX(), enemy.getPositionY(),
+                    100, 100);*/
+                    
+                    FontMetrics fontMetrics = g.getFontMetrics(); // Calculate font size
+                    String typedLetters = currentWord.substring(0,enemy.getFirstUnlockedChar());
+
+                    int textHeight = fontMetrics.getHeight();
+
+                    int typedTextWidth = fontMetrics.stringWidth(typedLetters.toUpperCase());
+                    int textWidth = fontMetrics.stringWidth(currentWord.toUpperCase());
+
+                    g.setColor(Color.BLUE);
+                    g.fillRect(textX, textY - fontMetrics.getAscent(),
+                        textWidth, textHeight); // Highlight behind enemy word for focused enemy
+                    g.setColor(Color.GREEN);
+                    g.fillRect(textX, textY - fontMetrics.getAscent(),
+                        typedTextWidth, textHeight); // Highlight behind typed characters
+                    
+                }
                 
                 // Drawing enemy current word
                 g.setColor(textColor);
