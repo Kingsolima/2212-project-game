@@ -15,6 +15,7 @@ import ca.uwo.cs2212.group54.stayingalive.accounts.Parental;
 import ca.uwo.cs2212.group54.stayingalive.game.Enemies.Enemy;
 import ca.uwo.cs2212.group54.stayingalive.game.Levels.Difficulty;
 import ca.uwo.cs2212.group54.stayingalive.game.Levels.LevelData;
+import ca.uwo.cs2212.group54.stayingalive.ui.NavigationControl;
 
 /**
  * Gameplay class
@@ -42,10 +43,17 @@ public class Gameplay {
     private Account player;
     private LevelData levelData;
 
-    private static final int PLAYER_X = 400;
-    private static final int PLAYER_Y = 300;
-    private static final int SAFE_RADIUS = 50;
+    private static final int PLAYER_X = NavigationControl.screenW;
+    private static final int PLAYER_Y = NavigationControl.screenH;
+    private static final int SAFE_RADIUS = 10;
     
+    /**
+     * Constructor for Gameplay
+     * 
+     * @param player The player account
+     * @param levelData The level data
+     * @param difficulty The difficulty of the game
+     */
     public Gameplay(Account player, LevelData levelData, Difficulty difficulty) {
         this.player = player;
         this.levelData = levelData;
@@ -87,12 +95,15 @@ public class Gameplay {
         this.inputLockTimer = 0;
         this.currWeight = 0;
         
+        int screenWidthBounds = NavigationControl.screenW * 2;
+        int screenHeightBounds = NavigationControl.screenH * 2;
+
         // Setup 16 target corners for spawn
         int[][] corners = {
-            {50, 50}, {100, 50}, {50, 100}, {100, 100}, // Top Left
-            {700, 50}, {750, 50}, {700, 100}, {750, 100}, // Top Right
-            {50, 500}, {100, 500}, {50, 550}, {100, 550}, // Bottom Left
-            {700, 500}, {750, 500}, {700, 550}, {750, 550} // Bottom Right
+            {50, 50}, {400, 50}, {50, 400}, {400, 400}, // Top Left
+            {screenWidthBounds - 400, 50}, {screenWidthBounds - 50, 50}, {screenWidthBounds - 400, 400}, {screenWidthBounds - 50, 400}, // Top Right
+            {50, screenHeightBounds - 400}, {100, screenHeightBounds - 400}, {200, screenHeightBounds - 200}, {400, screenHeightBounds - 200}, // Bottom Left
+            {screenWidthBounds - 400, screenHeightBounds - 400}, {screenWidthBounds - 50, screenHeightBounds - 400}, {screenWidthBounds - 400, screenHeightBounds - 200}, {screenWidthBounds - 200, screenHeightBounds - 200} // Bottom Right
         };
         for (int i = 0; i < 16; i++) {
             SPAWN_POINTS[i] = new Point(corners[i][0], corners[i][1]);
@@ -100,27 +111,56 @@ public class Gameplay {
     }
 
     // Getters
-
+    /**
+     * Gets the number of lives the player has.
+     * 
+     * @return The number of lives the player has.
+     */
     public int getLives() {
         return this.lives;
     }
 
+    /**
+     * Gets the score of the player.
+     * 
+     * @return The score of the player.
+     */
     public int getScore() {
         return this.score;
     }
 
+    /**
+     * Gets the words per minute of the player.
+     * 
+     * @return The words per minute of the player.
+     */
     public int getWPM() {
         return this.calculateWPM();
     }
 
+    /**
+     * Gets the time elapsed since the start of the game.
+     * 
+     * @return The time elapsed since the start of the game.
+     */
     public float getTime() {
         return this.time;
     }
 
+    /**
+     * Gets the list of active enemies.
+     * 
+     * @return The list of active enemies.
+     */
     public List<Enemy> getActiveEnemies() {
         return this.activeEnemies;
     }
 
+    /**
+     * Updates the game state.
+     * 
+     * @param deltaTime The time elapsed since last frame.
+     */
     public void update(float deltaTime) {
         if (isGameOver() || isLevelCleared()) {
             return;
@@ -141,7 +181,9 @@ public class Gameplay {
                     Enemy spawned = pendingEnemies.poll();
                     
                     // Assign random spawn point representation
-                    Point spawnPt = SPAWN_POINTS[random.nextInt(16)];
+                    int rand = random.nextInt(16);
+                    Point spawnPt = SPAWN_POINTS[rand];
+
                     spawned.setPosition(spawnPt.x, spawnPt.y);
                     
                     activeEnemies.add(spawned);
@@ -157,18 +199,20 @@ public class Gameplay {
             Enemy enemy = iterator.next();
             enemy.move(deltaTime, PLAYER_X, PLAYER_Y);
             
+            
             if (enemy.contact(PLAYER_X, PLAYER_Y, SAFE_RADIUS)) {
                 this.changeLives(-enemy.getDamage());
                 this.updateScore(-100, this.difficulty);
                 this.currWeight -= enemy.getWeight();
                 // Remove the Sprite from UI parent 
+                /* 
                 if (enemy.getSprite() != null && enemy.getSprite().getImage() != null) {
                     java.awt.Container parent = enemy.getSprite().getImage().getParent();
                     if (parent != null) {
                         parent.remove(enemy.getSprite().getImage());
                         parent.repaint();
                     }
-                }
+                }*/
                 iterator.remove();
             }
         }
@@ -179,6 +223,11 @@ public class Gameplay {
         }
     }
 
+    /**
+     * Processes the input from the player.
+     * 
+     * @param input The input from the player.
+     */
     public void processInput(String input) {
         if (isGameOver() || isLevelCleared()) {
             return;
@@ -208,8 +257,13 @@ public class Gameplay {
         inputLockTimer = 1.0f;
     }
     
+    /**
+     * Updates the score of the player.
+     * 
+     * @param amount The amount to add to the score.
+     * @param difficulty The difficulty of the game.
+     */
     public void updateScore(int amount, Difficulty difficulty) {
-        // Add score based on difficulty
         switch (difficulty) {
             case EASY: this.score += amount;
             case MEDIUM: this.score += amount * 1.5;
@@ -217,6 +271,10 @@ public class Gameplay {
         }
     }
 
+    /**
+     * Ends the current level and updates the player's statistics.
+     * Updates the player's level status and score.
+     */
     public void endLevel() {
         if (player != null && levelData != null) {
             LevelStatistic stats = this.player.getLevelStat(levelData.getNumber());
@@ -230,7 +288,7 @@ public class Gameplay {
             
             Level_status status = isLevelCleared() ? Level_status.COMPLETED : Level_status.UNLOCKED;
             
-            int newHighscore = Math.max(score, stats.getHighScore());
+            int newHighscore = Math.max(score, stats.getHighscore());
             int newAttempts = stats.getAttempts() + 1;
             stats.updateStats(calculateWPM(), calculateWPM(), mistakes, newHighscore, newAttempts, accuracy, status);
             this.player.setStats(stats);
@@ -238,20 +296,43 @@ public class Gameplay {
         }
     }
 
+    /**
+     * Checks if the game is over.
+     * 
+     * @return True if the game is over, false otherwise.
+     */
     public boolean isGameOver() {
         return this.lives <= 0;
     }
     
+    /**
+     * Checks if the level is cleared.
+     * 
+     * @return True if the level is cleared, false otherwise.
+     */
     public boolean isLevelCleared() {
         return this.levelCleared;
     }
 
+    /**
+     * Calculates the words per minute of the player.
+     * 
+     * @return The words per minute of the player.
+     */
     public int calculateWPM() {
         if (time == 0) return 0;
         return (int) (corrects / (time / 60.0f));
     }
 
+    /**
+     * Changes the number of lives the player has.
+     * 
+     * @param change The amount to change the number of lives by.
+     */
     public void changeLives(int change) {
         this.lives += change;
     }
+
+    public static int getPlayerX() { return PLAYER_X; }
+    public static int getPlayerY() { return PLAYER_Y; }
 }
