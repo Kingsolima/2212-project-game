@@ -142,6 +142,22 @@ public class Enemy {
     }
 
     /**
+     * 
+     * @return x position of this enemy
+     */
+    public int getPositionX() {
+        return (int)this.exactX;
+    }
+
+    /**
+     * 
+     * @return y position of this enemy
+     */
+    public int getPositionY() {
+        return (int)this.exactY;
+    }
+
+    /**
      * Gets the score given by the enemy when defeated.
      * 
      * @return The score of the enemy.
