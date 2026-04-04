@@ -18,6 +18,11 @@ public class Enemy {
     private int weight;
     private int score;
     private int currentWordIndex;
+    // To adjust amount of words needed to defeat each type of enemy
+    private final static int normalWords = 1;
+    private final static int hasHeartWords = 2;
+    private final static int bigWords = 3;
+    private final static int bossWords = 5;
 
     private float exactX;
     private float exactY;
@@ -42,6 +47,9 @@ public class Enemy {
                 this.speed = 1.0f;
                 this.weight = 1;
                 this.score = 10;
+                // initialize amount of words
+                this.words = new String[normalWords];
+                this.words[0] = words[0];
                 break;
             }
             case HAS_HEART: {
@@ -49,6 +57,8 @@ public class Enemy {
                 this.speed = 1.0f;
                 this.weight = 1;
                 this.score = 25;
+                this.words = new String[hasHeartWords];
+                for (int i = 0; i < this.words.length; i++) { this.words[i] = words[i]; }
                 break;
             }
             case BIG: {
@@ -56,6 +66,8 @@ public class Enemy {
                 this.speed = 0.75f;
                 this.weight = 5;
                 this.score = 50;
+                this.words = new String[bigWords];
+                for (int i = 0; i < this.words.length; i++) { this.words[i] = words[i]; }
                 break;
             }
             case BOSS: {
@@ -63,11 +75,14 @@ public class Enemy {
                 this.speed = 0.5f;
                 this.weight = 10;
                 this.score = 100;
+                this.words = new String[bossWords];
+                for (int i = 0; i < this.words.length; i++) { this.words[i] = words[i]; }
                 break;
             }
         }
         
         this.currentWordIndex = 0;
+        charsPressed = new boolean[words[currentWordIndex].length()];
         this.exactX = sprite != null ? sprite.getX() : 0;
         this.exactY = sprite != null ? sprite.getY() : 0;
     }
@@ -223,6 +238,7 @@ public class Enemy {
         if (!isDefeated()) {
             if (getFirstUnlockedChar() == -1) {
                 this.currentWordIndex++;
+                charsPressed = new boolean[words[currentWordIndex].length()];
             }
         }
     }

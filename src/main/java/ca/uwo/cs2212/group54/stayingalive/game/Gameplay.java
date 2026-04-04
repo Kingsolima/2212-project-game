@@ -38,6 +38,9 @@ public class Gameplay {
     private float timeSinceLastSpawn;
     private float inputLockTimer;
     private static final Point[] SPAWN_POINTS = new Point[16];
+    private static final int MIN_DISTANCE = 100;
+    private static final int MAX_SPAWN_ATTEMPTS = 50; // times it will attempt to spawn away from other enemies
+    private static final int SPAWN_BORDER_RADIUS = 99; // amnt of pixels that form a spawnable border
     private Random random;
     private boolean levelCleared;
     private Account player;
@@ -181,8 +184,9 @@ public class Gameplay {
                     Enemy spawned = pendingEnemies.poll();
                     
                     // Assign random spawn point representation
-                    int rand = random.nextInt(16);
-                    Point spawnPt = SPAWN_POINTS[rand];
+                    /*int rand = random.nextInt(16);
+                    Point spawnPt = SPAWN_POINTS[rand];*/
+                    Point spawnPt = getValidSpawn();
 
                     spawned.setPosition(spawnPt.x, spawnPt.y);
                     
@@ -239,8 +243,8 @@ public class Gameplay {
 
         for (Enemy enemy : activeEnemies) {
             String currentWord = enemy.getCurrentWord();
-
             if (enemy.wordContainsChar(input)) {
+                enemy.unlockNextCharacter();
                 enemy.updateWords();
                 updateScore(enemy.getScore(), difficulty);
 
@@ -331,6 +335,63 @@ public class Gameplay {
      */
     public void changeLives(int change) {
         this.lives += change;
+    }
+
+    /**
+     * gets a random X value to spawn the enemy
+     * @return
+     */
+    public int getRandomSpawnX() {
+        int result;
+
+        if (Math.random() < 0.5) {
+            result = (int)(Math.random() * SPAWN_BORDER_RADIUS) + 1;
+        } else {
+            result = (int)(Math.random() * SPAWN_BORDER_RADIUS) + (NavigationControl.screenW * 2 - SPAWN_BORDER_RADIUS);
+        }
+
+        return result;
+    }
+
+    public int getRandomSpawnY() {
+        int result;
+
+        if (Math.random() < 0.5) {
+            result = (int)(Math.random() * SPAWN_BORDER_RADIUS) + 1;
+        } else {
+            result = (int)(Math.random() * SPAWN_BORDER_RADIUS) + (NavigationControl.screenH * 2 - SPAWN_BORDER_RADIUS);
+        }
+
+        return result;
+    }
+
+
+    private Point getValidSpawn() {
+        Point p;
+        boolean valid;
+        int attempts = 0;
+
+        do {
+            attempts++;
+            int x = getRandomSpawnX();
+            int y = getRandomSpawnY();
+            p = new Point(x, y);
+
+            valid = true;
+
+            for (Enemy enemy : activeEnemies) {
+                double dx = enemy.getPositionX() - x;
+                double dy = enemy.getPositionY() - y;
+                double dist = Math.sqrt(dx * dx + dy * dy);
+
+                if (dist < MIN_DISTANCE) {
+                    valid = false;
+                    break;
+                }
+            }
+        } while (!valid && attempts < MAX_SPAWN_ATTEMPTS);
+
+        return p;
     }
 
     public static int getPlayerX() { return PLAYER_X; }
