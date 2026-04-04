@@ -45,8 +45,8 @@ public class LevelSelector {
      * @return           A fully constructed LevelData, or null if not found
      */
     public static LevelData getLevel(int section, int number, Difficulty difficulty) {
-        String[] wordPool = selectWordPool(difficulty);
-        if (number > 0 && number < 4) return buildLevel(number,wordPool);
+        String[] wordPool = selectWordPool(Difficulty.values()[number]);
+        if (number > 0 && number < 4) return buildLevel(number,wordPool); // number has to be between highest and lowest amnt of levels
         return null;
     }
     
