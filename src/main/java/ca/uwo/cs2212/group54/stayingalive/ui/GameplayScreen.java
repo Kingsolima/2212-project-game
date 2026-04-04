@@ -1,9 +1,14 @@
 package ca.uwo.cs2212.group54.stayingalive.ui;
 
 import java.awt.Color;
+import java.awt.Cursor;
+import java.awt.Dimension;
+import java.awt.Image;
 import java.awt.event.ActionEvent;
+import java.io.File;
 
 import javax.swing.Action;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JFrame;
@@ -25,6 +30,8 @@ public class GameplayScreen implements Screen {
 
     // Gameplay Frame
     private JFrame GameplayFrame = new JFrame("Staying Alive - Gameplay");
+    public final static int screenW = NavigationControl.screenW * 2;
+    public final static int screenH = NavigationControl.screenH * 2;
 
     // UI Colours
     private static final Color backgroundClr1 = new Color(0, 170, 0); // GREEN
@@ -77,7 +84,33 @@ public class GameplayScreen implements Screen {
      * Construct the UI for the gameplay screen
      */
     private void buildUI() {
+        backButton = buildBackButton();
+        gamePanel.add(backButton);
         GameplayFrame.getContentPane().add(gamePanel);
+
+    }
+
+    /** Back button using the back.png image from the global folder. */
+    private JButton buildBackButton() {                                          // TODO: Add javadoc comments to method
+        ImageIcon icon = null;
+        File imgFile = new File("global/back.png");
+        if (imgFile.exists()) {
+            Image img = new ImageIcon(imgFile.getAbsolutePath()).getImage()
+                            .getScaledInstance(50, 50, Image.SCALE_SMOOTH);
+            icon = new ImageIcon(img);
+        }
+        JButton btn = new JButton(icon);
+        btn.setPreferredSize(new Dimension(50, 50));
+        btn.setOpaque(false);
+        btn.setContentAreaFilled(false);
+        btn.setBorderPainted(false);
+        btn.setFocusPainted(false);
+        btn.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+        btn.setToolTipText("Back");
+        btn.setActionCommand("Back");
+        btn.addActionListener(this); // handle back button click in actionPerformed
+        btn.setBounds(screenW - 150, 20, 50, 50);
+        return btn;
     }
 
     /**
@@ -85,8 +118,10 @@ public class GameplayScreen implements Screen {
      */
     @Override
     public void moveToNextScreen(String screenToMoveTo) {
-        // TODO Auto-generated method stub
-        
+        if (screenToMoveTo.equals("Player")) {
+            System.out.println("to player menu");
+            NavigationControl.setCurrentScreen(3);
+        }
     }
 
     /**

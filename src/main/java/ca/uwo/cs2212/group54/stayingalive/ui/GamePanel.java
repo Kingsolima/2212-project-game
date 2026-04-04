@@ -46,6 +46,7 @@ public class GamePanel extends JPanel implements ActionListener, KeyListener {
     public GamePanel(Gameplay gameplay) {
         setFocusable(true);
         addKeyListener(this);
+        this.setLayout(null);
 
         this.gameplay = gameplay;
 
