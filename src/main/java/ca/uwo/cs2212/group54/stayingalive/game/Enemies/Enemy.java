@@ -10,6 +10,7 @@ import ca.uwo.cs2212.group54.stayingalive.sprites.Sprite;
  */
 public class Enemy {
     private String[] words;
+    private boolean[] charsPressed; // To see which indexes of characters for the word were pressed
     private Enemy_Attribute attribute;
     private Sprite sprite;
     private int damage;
@@ -17,6 +18,11 @@ public class Enemy {
     private int weight;
     private int score;
     private int currentWordIndex;
+    // To adjust amount of words needed to defeat each type of enemy
+    private final static int normalWords = 1;
+    private final static int hasHeartWords = 2;
+    private final static int bigWords = 3;
+    private final static int bossWords = 5;
 
     private float exactX;
     private float exactY;
@@ -41,6 +47,9 @@ public class Enemy {
                 this.speed = 1.0f;
                 this.weight = 1;
                 this.score = 10;
+                // initialize amount of words
+                this.words = new String[normalWords];
+                this.words[0] = words[0];
                 break;
             }
             case HAS_HEART: {
@@ -48,6 +57,8 @@ public class Enemy {
                 this.speed = 1.0f;
                 this.weight = 1;
                 this.score = 25;
+                this.words = new String[hasHeartWords];
+                for (int i = 0; i < this.words.length; i++) { this.words[i] = words[i]; }
                 break;
             }
             case BIG: {
@@ -55,6 +66,8 @@ public class Enemy {
                 this.speed = 0.75f;
                 this.weight = 5;
                 this.score = 50;
+                this.words = new String[bigWords];
+                for (int i = 0; i < this.words.length; i++) { this.words[i] = words[i]; }
                 break;
             }
             case BOSS: {
@@ -62,11 +75,14 @@ public class Enemy {
                 this.speed = 0.5f;
                 this.weight = 10;
                 this.score = 100;
+                this.words = new String[bossWords];
+                for (int i = 0; i < this.words.length; i++) { this.words[i] = words[i]; }
                 break;
             }
         }
         
         this.currentWordIndex = 0;
+        charsPressed = new boolean[words[currentWordIndex].length()];
         this.exactX = sprite != null ? sprite.getX() : 0;
         this.exactY = sprite != null ? sprite.getY() : 0;
     }
@@ -220,7 +236,50 @@ public class Enemy {
      */
     public void updateWords() {
         if (!isDefeated()) {
-            this.currentWordIndex++;
+            if (getFirstUnlockedChar() == -1) {
+                this.currentWordIndex++;
+                charsPressed = new boolean[words[currentWordIndex].length()];
+            }
         }
+    }
+
+    /**
+     * Helper method to unlock the next character in the current word.
+     */
+    public void unlockNextCharacter() {
+        // if this is the first character being pressed
+        for (int i = 0; i < charsPressed.length; i++) {
+            if (charsPressed[i] == false) {
+                charsPressed[i] = true;
+                return;
+            }
+        }
+    }
+
+    /**
+     * Helper method to check which index is unlocked.
+     * @return the index of the first unlocked character
+     * 
+     */
+    public int getFirstUnlockedChar() {
+        for (int i = 0; i < charsPressed.length; i++) {
+            if (charsPressed[i] == false) {
+                return i;
+            }
+        }
+        return -1; // if all characters are unlocked
+    }
+
+    /**
+     * Check if the current word contain the character.
+     * @param c The character that has been input.
+     * @return True if 'c' is in the word and false otherwise.
+     */
+    public boolean wordContainsChar(char c) {
+        if (getFirstUnlockedChar() >= 0) {
+            int unlockedIndex = getFirstUnlockedChar();
+            if (getCurrentWord().charAt(unlockedIndex) == c) return true;
+        }
+        return false;
     }
 }
