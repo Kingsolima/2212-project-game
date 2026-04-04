@@ -100,10 +100,10 @@ public class Gameplay {
 
         // Setup 16 target corners for spawn
         int[][] corners = {
-            {50, 50}, {100, 50}, {50, 100}, {100, 100}, // Top Left
-            {screenWidthBounds - 100, 50}, {screenWidthBounds - 50, 50}, {screenWidthBounds - 100, 100}, {screenWidthBounds - 50, 100}, // Top Right
-            {50, screenHeightBounds - 100}, {100, screenHeightBounds - 100}, {50, screenHeightBounds - 50}, {100, screenHeightBounds - 50}, // Bottom Left
-            {screenWidthBounds - 100, screenHeightBounds - 100}, {screenWidthBounds - 50, screenHeightBounds - 100}, {screenWidthBounds - 100, screenHeightBounds - 50}, {screenWidthBounds - 50, screenHeightBounds - 50} // Bottom Right
+            {50, 50}, {400, 50}, {50, 400}, {400, 400}, // Top Left
+            {screenWidthBounds - 400, 50}, {screenWidthBounds - 50, 50}, {screenWidthBounds - 400, 400}, {screenWidthBounds - 50, 400}, // Top Right
+            {50, screenHeightBounds - 400}, {100, screenHeightBounds - 400}, {200, screenHeightBounds - 200}, {400, screenHeightBounds - 200}, // Bottom Left
+            {screenWidthBounds - 400, screenHeightBounds - 400}, {screenWidthBounds - 50, screenHeightBounds - 400}, {screenWidthBounds - 400, screenHeightBounds - 200}, {screenWidthBounds - 200, screenHeightBounds - 200} // Bottom Right
         };
         for (int i = 0; i < 16; i++) {
             SPAWN_POINTS[i] = new Point(corners[i][0], corners[i][1]);
