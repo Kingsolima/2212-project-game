@@ -7,7 +7,6 @@ import javax.swing.JButton;
 import javax.swing.JFrame;
 
 import ca.uwo.cs2212.group54.stayingalive.accounts.Account;
-import ca.uwo.cs2212.group54.stayingalive.accounts.AccountManagement;
 import ca.uwo.cs2212.group54.stayingalive.game.Gameplay;
 import ca.uwo.cs2212.group54.stayingalive.game.Levels.Difficulty;
 import ca.uwo.cs2212.group54.stayingalive.game.Levels.LevelSelector;
@@ -41,6 +40,7 @@ public class GameplayScreen implements Screen {
     public GameplayScreen() {
         Account player = new Account("random1","test");
         int currentPlayerLevel = player.playerProgress.getCurrentLevel();
+        //int currentPlayerLevel = 1;
         Difficulty difficulty = Difficulty.values()[currentPlayerLevel];
         Gameplay gameplay = new Gameplay(player,LevelSelector.getLevel(1, currentPlayerLevel, difficulty),difficulty);
         gamePanel = new GamePanel(gameplay);
@@ -66,7 +66,7 @@ public class GameplayScreen implements Screen {
         GameplayFrame.getContentPane().removeAll();
         buildUI();
         GameplayFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        GameplayFrame.setSize(NavigationControl.screenW, NavigationControl.screenH);
+        GameplayFrame.setSize(NavigationControl.screenW * 2, NavigationControl.screenH * 2);
         GameplayFrame.setBackground(backgroundPurple);
         GameplayFrame.setVisible(true);
         GameplayFrame.setLocationRelativeTo(null);

@@ -71,6 +71,7 @@ public class LevelSelector {
                 // 10 Normal enemies — gentle introduction
                 Enemy[] enemies = {
                     makeEnemy(1, Enemy_Attribute.NORMAL, wordPool),
+                    /*makeEnemy(1, Enemy_Attribute.NORMAL, wordPool),
                     makeEnemy(1, Enemy_Attribute.NORMAL, wordPool),
                     makeEnemy(1, Enemy_Attribute.NORMAL, wordPool),
                     makeEnemy(1, Enemy_Attribute.NORMAL, wordPool),
@@ -78,8 +79,7 @@ public class LevelSelector {
                     makeEnemy(1, Enemy_Attribute.NORMAL, wordPool),
                     makeEnemy(1, Enemy_Attribute.NORMAL, wordPool),
                     makeEnemy(1, Enemy_Attribute.NORMAL, wordPool),
-                    makeEnemy(1, Enemy_Attribute.NORMAL, wordPool),
-                    makeEnemy(1, Enemy_Attribute.NORMAL, wordPool)
+                    makeEnemy(1, Enemy_Attribute.NORMAL, wordPool)*/
                 };
                 return new LevelData(1, enemies, background);
             }
@@ -168,16 +168,16 @@ public class LevelSelector {
 
         // these are the 3 bird images that can be used for enemies
         String[] birdImages = {
-            "/images/Bird1.png",
-            "/images/Bird2.png",
-            "/images/Bird3.png"
+            "global/Bird1.png",
+            "global/Bird2.png",
+            "global/Bird3.png"
         };
 
         // this rndomly choose one bird image each time an enemy is created
         String chosenBird = birdImages[(int) (Math.random() * birdImages.length)];
 
         // Load the chosen image from the resources/images folder
-        ImageIcon icon = new ImageIcon(LevelSelector.class.getResource(chosenBird));
+        ImageIcon icon = new ImageIcon(chosenBird);
 
         //  this puts the image inside a JLabel, which is needed to create a Sprite for the enemy
         JLabel label = new JLabel(icon);

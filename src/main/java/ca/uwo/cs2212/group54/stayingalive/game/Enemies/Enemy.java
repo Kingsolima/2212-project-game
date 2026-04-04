@@ -88,7 +88,7 @@ public class Enemy {
      * @param targetY The target Y coordinate (player).
      */
     public void move(float deltaTime, int targetX, int targetY) {
-        if (sprite == null) return;
+        /*if (sprite == null) return;
         
         float dx = targetX - this.exactX;
         float dy = targetY - this.exactY;
@@ -98,7 +98,35 @@ public class Enemy {
         this.exactY += Math.sin(angle) * this.speed * deltaTime;
         
         this.sprite.setX(Math.round(this.exactX));
-        this.sprite.setY(Math.round(this.exactY));
+        this.sprite.setY(Math.round(this.exactY));*/
+        if (sprite == null) return;
+
+        float dx = targetX - this.exactX;
+        float dy = targetY - this.exactY;
+
+        float distance = (float) Math.sqrt(dx * dx + dy * dy);
+
+        // If already at target (or very close), snap to it
+        if (distance < 0.01f) {
+            this.exactX = targetX;
+            this.exactY = targetY;
+        } else {
+            float maxStep = this.speed * deltaTime;
+
+            // Clamp movement to not overshoot
+            float step = Math.min(maxStep, distance);
+
+            float nx = dx / distance; // normalized direction
+            float ny = dy / distance;
+
+            this.exactX += nx * step;
+            this.exactY += ny * step;
+        }
+
+        //this.sprite.setX(Math.round(this.exactX));
+        //this.sprite.setY(Math.round(this.exactY));
+        this.sprite.setX((int)this.exactX);
+        this.sprite.setY((int)this.exactY);
     }
 
     /**

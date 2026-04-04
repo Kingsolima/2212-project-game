@@ -15,6 +15,7 @@ import ca.uwo.cs2212.group54.stayingalive.accounts.Parental;
 import ca.uwo.cs2212.group54.stayingalive.game.Enemies.Enemy;
 import ca.uwo.cs2212.group54.stayingalive.game.Levels.Difficulty;
 import ca.uwo.cs2212.group54.stayingalive.game.Levels.LevelData;
+import ca.uwo.cs2212.group54.stayingalive.ui.NavigationControl;
 
 /**
  * Gameplay class
@@ -42,9 +43,9 @@ public class Gameplay {
     private Account player;
     private LevelData levelData;
 
-    private static final int PLAYER_X = 400;
-    private static final int PLAYER_Y = 300;
-    private static final int SAFE_RADIUS = 50;
+    private static final int PLAYER_X = NavigationControl.screenW;
+    private static final int PLAYER_Y = NavigationControl.screenH;
+    private static final int SAFE_RADIUS = 10;
     
     /**
      * Constructor for Gameplay
@@ -177,7 +178,9 @@ public class Gameplay {
                     Enemy spawned = pendingEnemies.poll();
                     
                     // Assign random spawn point representation
-                    Point spawnPt = SPAWN_POINTS[random.nextInt(16)];
+                    int rand = random.nextInt(16);
+                    Point spawnPt = SPAWN_POINTS[rand];
+
                     spawned.setPosition(spawnPt.x, spawnPt.y);
                     
                     activeEnemies.add(spawned);
@@ -192,6 +195,7 @@ public class Gameplay {
         while (iterator.hasNext()) {
             Enemy enemy = iterator.next();
             enemy.move(deltaTime, PLAYER_X, PLAYER_Y);
+            
             
             if (enemy.contact(PLAYER_X, PLAYER_Y, SAFE_RADIUS)) {
                 this.changeLives(-enemy.getDamage());

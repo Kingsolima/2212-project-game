@@ -17,8 +17,8 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.Timer;
 
-import ca.uwo.cs2212.group54.stayingalive.game.Gameplay;
 import ca.uwo.cs2212.group54.stayingalive.game.Enemies.Enemy;
+import ca.uwo.cs2212.group54.stayingalive.game.Gameplay;
 
 public class GamePanel extends JPanel implements ActionListener, KeyListener {
 
@@ -72,18 +72,27 @@ public class GamePanel extends JPanel implements ActionListener, KeyListener {
         g.setColor(Color.RED);
         List<Enemy> active = gameplay.getActiveEnemies();
         for (Enemy enemy: active) {
-            g.fillRect(enemy.getPositionX(), enemy.getPositionY(), 40, 40);
+            System.out.println(enemy.getPositionX() + " " + enemy.getPositionY());
+            //g.fillRect(enemy.getPositionX(), enemy.getPositionY(), 40, 40);
             JLabel label = enemy.getSprite().getImage();
             Icon icon = label.getIcon();
             Image image = ((ImageIcon) icon).getImage();
-            g.drawImage(image, 50, 50, null);
+            
+            g.drawImage(image, enemy.getSprite().getX(), enemy.getSprite().getY(), 200, 200, null);
+            g.drawLine(playerX,playerY,enemy.getSprite().getX(),enemy.getSprite().getY());
+            //g.drawImage(image, enemy.getPositionX(), enemy.getPositionY(), 200, 200, null);
+            /*if (enemy.getPositionX() < playerX) {
+                g.drawImage(image, enemy.getPositionX(), enemy.getPositionY(), 200, 200, null);
+            } else {
+                g.drawImage(image, enemy.getPositionX(), enemy.getPositionY(), -200, 200, null);
+            }*/
         }
     }
 
     @Override
     public void actionPerformed(ActionEvent e) {
         long now = System.nanoTime();
-        float deltaTime = (now - lastTime) / 1_000_000_000.0f;
+        float deltaTime = (now - lastTime) / 100_000_000.0f;
         lastTime = now;
         updateGame(deltaTime);
         repaint();
