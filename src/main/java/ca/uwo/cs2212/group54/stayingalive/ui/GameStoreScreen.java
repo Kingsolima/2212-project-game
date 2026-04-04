@@ -1,50 +1,27 @@
 package ca.uwo.cs2212.group54.stayingalive.ui;
 
-//package ui;
-// TODO: Adjust class to match Screen interface; scroll bar hides content when sized by the app, may need to resize components
+// TODO: Integrate account classes for saving purchases
 
-import java.awt.BasicStroke;
-import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.Cursor;
-import java.awt.Dimension;
-import java.awt.FlowLayout;
-import java.awt.Font;
-import java.awt.FontMetrics;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
-import java.awt.GridLayout;
-import java.awt.Image;
-import java.awt.RenderingHints;
-import java.awt.event.ActionEvent;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
+import java.awt.*;
+import java.awt.event.*;
 import java.io.File;
-import java.util.ArrayList;
+import java.util.*;
 import java.util.List;
 
-import javax.swing.BorderFactory;
-import javax.swing.Box;
-import javax.swing.BoxLayout;
-import javax.swing.ImageIcon;
-import javax.swing.JButton;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.SwingConstants;
+import javax.swing.*;
+
+import ca.uwo.cs2212.group54.stayingalive.accounts.*;
 
 /**
  * GameStoreScreen – lets the player spend accumulated score on power-ups and cosmetics.
  *
+ * <p>
  * Layout:
  *   - Purple background matching the app theme
  *   - Top bar: "Game Store" title left | coin pill + back button right
  *   - Left half: player avatar centred, owned power-up badges underneath
  *   - Right half: scrollable card list of purchasable items with Buy buttons
+ * @author Omar Soliman
  */
 
 public class GameStoreScreen implements Screen {
@@ -72,32 +49,34 @@ public class GameStoreScreen implements Screen {
     }
 
     // ── Fields ────────────────────────────────────────────────────────────
-    private       int            playerCoins;
-    private       Image          avatarImage;
-    private final List<StoreItem> items = new ArrayList<>();
-    private       JFrame         gameStoreFrame;
-
+    private       int               playerCoins;
+    private       Image             avatarImage;
+    private final List<StoreItem>   items = new ArrayList<>();
+    private       Account           currentUser;
+    
     // Coin pill label so we can update it after a purchase
     private JLabel coinPill;
 
     // Owned-powerup badges so we can refresh counts
     private final List<JLabel> badgeLabels = new ArrayList<>();
+    private       JFrame         gameStoreFrame;
+
 
     // ── Constructors ──────────────────────────────────────────────────────
-    // TODO: Maybe need a way to adjust based on user coins
-    public GameStoreScreen(int initialCoins) {
-        this.playerCoins = initialCoins;
-    }
     public GameStoreScreen() {
-        this(0);
+        this.playerCoins = 0;
     }
 
-    // ── Public API ────────────────────────────────────────────────────────
+    // ── Coin Updates ────────────────────────────────────────────────────────
+    public void setAccount(Account user) {
+        this.currentUser = user;
+        this.playerCoins = user.coins;
+        refreshCoinPill();
+    }
     public void setPlayerCoins(int coins) {
         this.playerCoins = coins;
         refreshCoinPill();
     }
-
     public int getPlayerCoins() { return playerCoins; }
 
     // ── Default catalogue ─────────────────────────────────────────────────
@@ -431,7 +410,9 @@ public class GameStoreScreen implements Screen {
     }
 
     // ── Purchase logic ────────────────────────────────────────────────────
+    // TODO: Ensure purchases are saved, both as items and as coin deficits
     private void handlePurchase(StoreItem item) {
+        System.out.println("Buying " + item.name);
         if (playerCoins < item.cost) {
             JOptionPane.showMessageDialog(gameStoreFrame,
                     "You need " + item.cost + " coins but only have " + playerCoins + ".",
@@ -439,6 +420,8 @@ public class GameStoreScreen implements Screen {
             return;
         }
         playerCoins -= item.cost;
+        currentUser.coins = playerCoins;
+        Parental.saveAccountData(); // TODO: Ensure purchases are saved
         item.quantity++;
         refreshCoinPill();
         refreshBadges();
@@ -468,14 +451,36 @@ public class GameStoreScreen implements Screen {
         if (file.exists()) avatarImage = new ImageIcon(file.getAbsolutePath()).getImage();
     }
 
+
+    // TODO: ADD KEYBOARD NAV FUNCTIONALITY
+    // ── General Navigation ────────────────────────────────────────────────
+    /**
+     * General navigation for both keyboard and button presses.
+     * @param command The name of the command used
+     * @author Fardin Abbassi
+     */
+    private void navigateTo(String command) {
+        // move from this class to the next screen based on the button clicked
+        if (command.equals("Back")){
+            System.out.println("to player");
+            this.moveToNextScreen("Player");
+        }
+    }
+    
+
+    @Override
+    public void addKeyShortcut(JComponent target, int keyCode, Action action) {
+        InputMap im = target.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW);
+        ActionMap am = target.getActionMap();
+        String key = "shortcut_" + keyCode;
+        im.put(KeyStroke.getKeyStroke(keyCode, 0), key);
+        am.put(key, action);
+    }
+    // ── Screen Implemented Functions
     // TODO: Action listener
     @Override
     public void actionPerformed(ActionEvent e) {
-        // move from this class to player menu when back button is clicked
-        if (e.getActionCommand() != null && e.getActionCommand().equals("Back")) {
-            System.out.println("→ Back");
-            this.moveToNextScreen("Player");
-        }
+        if (e.getActionCommand() != null) navigateTo(e.getActionCommand());
     }
     //TODO: public showScreen
     @Override
@@ -484,8 +489,8 @@ public class GameStoreScreen implements Screen {
             gameStoreFrame = new JFrame("Staying Alive - Game Store");
             WindowUtils.addSaveOnClose(gameStoreFrame); // data is saved when window is closed
         }
+        setAccount(AccountManagement.getCurrentAccount());
         gameStoreFrame.setSize(NavigationControl.screenW, NavigationControl.screenH);
-        this.playerCoins = 0;   //temp screen = new temp(3000); // GameStoreScreen screen = new GameStoreScreen(() -> System.out.println("→ Back"), 3000);
         gameStoreFrame.getContentPane().removeAll();
         loadAvatar("global/download.png");
         initItems();
@@ -493,6 +498,11 @@ public class GameStoreScreen implements Screen {
         //gameStoreFrame.setContentPane(screen);
         gameStoreFrame.setLocationRelativeTo(null);
         gameStoreFrame.setVisible(true);
+        WindowUtils.setAppIcon(gameStoreFrame);
+        addKeyShortcut((JPanel)gameStoreFrame.getContentPane(),KeyEvent.VK_ESCAPE, new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) { navigateTo("Back"); }
+        });
     }
     // TODO: public moveToNextScreen
     @Override

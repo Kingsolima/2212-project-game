@@ -1,30 +1,13 @@
 package ca.uwo.cs2212.group54.stayingalive.ui;
 
-import java.awt.BasicStroke;
-import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.Cursor;
-import java.awt.Dimension;
-import java.awt.FlowLayout;
-import java.awt.Font;
-import java.awt.FontMetrics;
-import java.awt.Graphics;
-import java.awt.Graphics2D;
-import java.awt.GridBagLayout;
-import java.awt.Image;
-import java.awt.RenderingHints;
-import java.awt.event.ActionEvent;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
+import java.awt.*;
+import java.awt.event.*;
 import java.io.File;
 import java.net.URL;
+import ca.uwo.cs2212.group54.stayingalive.accounts.Account;
+import ca.uwo.cs2212.group54.stayingalive.accounts.AccountManagement;
 
-import javax.swing.BorderFactory;
-import javax.swing.ImageIcon;
-import javax.swing.JButton;
-import javax.swing.JFrame;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
+import javax.swing.*;
 
 /**
  * PlayerScreen – the hub screen shown after a player logs in.
@@ -43,8 +26,8 @@ import javax.swing.JPanel;
 public class PlayerScreen implements Screen {
 
     // ── Colour palette ────────────────────────────────────────────────────
-    private static final Color BG_COLOR      = new Color(0x6A, 0x5A, 0xCD); // medium-purple
-    private static final Color BUTTON_COLOR  = new Color(0x00, 0xBF, 0xFF); // deep-sky-blue
+    private static final Color BG_COLOR      = new Color(0x6A, 0x5A, 0xCD);
+    private static final Color BUTTON_COLOR  = new Color(0x00, 0xBF, 0xFF);
     private static final Color BUTTON_HOVER  = new Color(0x00, 0x9A, 0xCD);
     private static final Color BUTTON_TEXT   = Color.WHITE;
 
@@ -52,13 +35,14 @@ public class PlayerScreen implements Screen {
     private Image avatarImage;
     private JFrame playerFrame;
     private String avatarPath;
+    private Account user;
 
     // ── Constructor ───────────────────────────────────────────────────────
     /**
      * Constructor for the class.
      * 
      * <p>
-     * Sets the avatar iamge path to whatever is specified, or defaults to the placeholder image.
+     * Sets the avatar image path to whatever is specified, or defaults to the placeholder image.
      * @param avatarPath resource path to the avatar image (e.g. "/assets/kitten.png"),
      *                   or {@code null} to use the built-in placeholder
      */
@@ -69,8 +53,15 @@ public class PlayerScreen implements Screen {
     public PlayerScreen() {
         this.avatarPath = "global/download.png";
     }
-    
+
+    // ──── User Setter and Getter ─────────────────────────────────────────────
+    public void setUser(Account user) {this.user = user;}
+    public Account getUser() {return user;}
+
     // ── UI construction ───────────────────────────────────────────────────
+    /**
+     * 
+     */
     private void buildUI() {
         JPanel mainPanel = new JPanel(new BorderLayout());
         mainPanel.setBackground(BG_COLOR);
@@ -81,7 +72,10 @@ public class PlayerScreen implements Screen {
         playerFrame.setContentPane(mainPanel);
     }
 
-    /** Top bar: title on the left, logout arrow on the right. */
+    /** 
+     * Top bar: title on the left, logout arrow on the right. 
+     * 
+     */
     private JPanel buildTopBar() {
         JPanel bar = new JPanel(new BorderLayout());
         bar.setOpaque(false);
@@ -96,7 +90,10 @@ public class PlayerScreen implements Screen {
         return bar;
     }
 
-    /** Round X button that exits / logs out and returns to the main menu. */
+    /** 
+     * Round X button that exits / logs out and returns to the main menu. 
+     * 
+     */
     private JButton buildLogoutButton() {
         JButton btn = new JButton() {
             private boolean hovered = false;
@@ -199,7 +196,10 @@ public class PlayerScreen implements Screen {
         return panel;
     }
 
-    /** Bottom bar with the four navigation buttons. */
+    /** 
+     * Bottom bar with the four navigation buttons. 
+     * 
+     */
     private JPanel buildButtonBar() {
         JPanel bar = new JPanel(new FlowLayout(FlowLayout.CENTER, 18, 14));
         bar.setOpaque(false);
@@ -213,7 +213,10 @@ public class PlayerScreen implements Screen {
         return bar;
     }
 
-    /** Factory for a styled navigation button. */
+    /** 
+     * Factory for a styled navigation button. 
+     * 
+     */
     private JButton makeNavButton(String label) {
         JButton btn = new JButton(label) {
             private boolean hovered = false;
@@ -254,8 +257,10 @@ public class PlayerScreen implements Screen {
     }
 
     // ── Avatar loading ────────────────────────────────────────────────────
-
-    /** Loads the avatar image from a file path; leaves {@code avatarImage} null if not found. */
+    /** 
+     * Loads the avatar image from a file path; leaves {@code avatarImage} null if not found. 
+     * 
+     */
     private void loadAvatar(String filePath) {
         if (filePath != null) {
             File file = new File(filePath);
@@ -272,23 +277,96 @@ public class PlayerScreen implements Screen {
         // avatarImage stays null → buildAvatarPanel draws the placeholder box
     }
 
-// SCREEN INTERGACE METHODS -----------------------------------------------
-    // TODO: Action listener
+
+    // ── General Navigation ────────────────────────────────────────────────
+    /**
+     * General navigation for both keyboard and button presses.
+     * @param command The name of the command used
+     * @author Fardin Abbassi
+     */
+    private void navigateTo(String command) {
+        // move from this class to the next screen based on the button clicked
+            System.out.println("→ " + command);
+            this.moveToNextScreen(command);
+    }
+    /**
+     * Helper function to make adding shortcuts easier to read.
+     * 
+     * @param target The component to add key shortcuts to
+     */
+    private void addKeyShortcuts(JComponent target) {
+        // New Game: N
+        addKeyShortcut(target, KeyEvent.VK_N, new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) { navigateTo("New Game"); }
+        });
+        
+        // Continue Game: C
+        addKeyShortcut(target, KeyEvent.VK_C, new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) { navigateTo("Continue Game"); }
+        });
+
+        // Game Store: G
+        addKeyShortcut(target, KeyEvent.VK_G, new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) { navigateTo("Game Store"); }
+        });
+
+        // Stats: S
+        addKeyShortcut(target, KeyEvent.VK_S, new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) { navigateTo("Stats"); }
+        });
+
+        // Logout: ESC
+        addKeyShortcut(target, KeyEvent.VK_ESCAPE, new AbstractAction() {
+            @Override
+            public void actionPerformed(ActionEvent e) { navigateTo("Logout"); }
+        });
+    }
+    
+    
+// SCREEN INTERFACE METHODS -----------------------------------------------
+    /**
+     * Add key press functionality to a given key.
+     * 
+     * @param target The component to give the navigation logic to
+     * @param keyCode The key to give logic to
+     * @param action The logic to give
+     * @author Fardin Abbassi
+     */
+    @Override
+    public void addKeyShortcut(JComponent target, int keyCode, Action action) {
+        InputMap im = target.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW);
+        ActionMap am = target.getActionMap();
+        String key = "shortcut_" + keyCode;
+        im.put(KeyStroke.getKeyStroke(keyCode, 0), key);
+        am.put(key, action);
+    }
+    /**
+     * Handle button press logic by rerouting to general navigation handling.
+     * @author Omar Soliman
+     */
     @Override
     public void actionPerformed(ActionEvent e) {
-        if (e.getActionCommand() != null) {
-            // move from this class to the next screen based on the button clicked
-            System.out.println("→ " + e.getActionCommand());
-            this.moveToNextScreen(e.getActionCommand());
-        }
+        if (e.getActionCommand() != null) navigateTo(e.getActionCommand());
     }
     //TODO: public showScreen
+    /**
+     * Builds the UI of the screen.
+     * 
+     * <p>
+     * Uses helper functions to build panels, then sets keyboard maps for each button in the larger panel.
+     */
     @Override
     public void showScreen() {
+        // Build Player Frame
         if (playerFrame == null) {
             playerFrame = new JFrame("Staying Alive - Player Menu");
             WindowUtils.addSaveOnClose(playerFrame); // data is saved when window is closed
         }
+        setUser(AccountManagement.getCurrentAccount());
         playerFrame.setSize(NavigationControl.screenW, NavigationControl.screenH);
         playerFrame.getContentPane().removeAll();
         
@@ -296,18 +374,21 @@ public class PlayerScreen implements Screen {
         buildUI();
         playerFrame.setLocationRelativeTo(null);
         playerFrame.setVisible(true);
+        WindowUtils.setAppIcon(playerFrame);
+
+        // Add key press navigation
+        addKeyShortcuts((JPanel) playerFrame.getContentPane());
+
     }
-    // TODO: public moveToNextScreen
+    // TODO: add Gameplay function when integrated
+    /**
+     * Move from player screen to the specified screen.
+     * 
+     * @param screenToMoveTo The specified screen to switch to
+     */
     @Override
     public void moveToNextScreen(String screenToMoveTo) {
-        // when integrating, move from this class to player menu when the back button is clicked
-
-/*
-        New Game
-        Continue Game
-        Game Store
-        Stats
-*/
+        // TODO: when integrating, move from this class to player menu when the back button is clicked; ensure that player data is kept when continuing a game
         if (screenToMoveTo.equals("New Game")) {
             System.out.println("to new game");
 //            NavigationControl.setCurrentScreen(7); // Make sure to reset data when starting a new game
@@ -330,11 +411,15 @@ public class PlayerScreen implements Screen {
         }
         if (screenToMoveTo.equals("Logout")) {
             WindowUtils.activateSaveSequence(); // save data before logging out.
-            NavigationControl.goBack();
+            NavigationControl.setCurrentScreen(0);;
         }
     }
     // TODO: public getFrame
+    /**
+     * Return the player screen's frame.
+     * @return The player screen's frame
+     */
     @Override
-    public JFrame getFrame() {return this.playerFrame;}
+    public JFrame getFrame() { return this.playerFrame; }
 
 }

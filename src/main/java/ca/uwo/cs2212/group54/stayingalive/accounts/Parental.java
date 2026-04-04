@@ -90,6 +90,23 @@ public class Parental {
         saveAccountData();
     }
 
+    public void resetPlayerStats(String username) {
+        for (Account account: accounts) {
+            if (account.getUsername().equals(username)) {
+                account.clearStats();
+                account.getProgress().clearProgress();
+                break;
+            }
+        }
+        saveAccountData();
+    }
+
+    public boolean deleteAccount(String username) {
+        boolean removed = accounts.removeIf(a -> a.getUsername().equals(username));
+        if (removed) saveAccountData();
+        return removed;
+    }
+
     private void resetHighScores() {
         
     }

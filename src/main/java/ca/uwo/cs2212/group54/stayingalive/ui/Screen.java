@@ -14,4 +14,5 @@ public interface Screen extends ActionListener{
     void showScreen();
     void moveToNextScreen(String screenToMoveTo);
     JFrame getFrame();
+    void addKeyShortcut(JComponent target, int keyCode, Action action);
 }

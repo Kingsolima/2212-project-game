@@ -1,7 +1,9 @@
 package ca.uwo.cs2212.group54.stayingalive.accounts;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class LevelStatistic {
     @JsonProperty("level_data")
     private LevelData levelData;
@@ -87,6 +89,10 @@ public class LevelStatistic {
 
     @JsonProperty("highscore")
     public int getHighscore() {
+        return highscore;
+    }
+
+    public int getHighScore() {
         return highscore;
     }
 

@@ -1,7 +1,6 @@
 package ca.uwo.cs2212.group54.stayingalive.ui;
 
-import ca.uwo.cs2212.group54.stayingalive.accounts.AccountManagement;
-import ca.uwo.cs2212.group54.stayingalive.accounts.Parental;
+import ca.uwo.cs2212.group54.stayingalive.accounts.*;
 
 /**
  * NavigationControl class both controls the screen navigation and the origin point of the application.
@@ -63,7 +62,9 @@ public class NavigationControl {
      * @author Omar Soliman
      */
     public static void goBack() {
+        System.err.println("prev index = " + previousScreenIndex);
         setCurrentScreen(previousScreenIndex);
+        System.err.println("prev index = " + previousScreenIndex);
     }
     /**
      * Get screen at the index of the screen list.
@@ -85,8 +86,8 @@ public class NavigationControl {
         LoginScreen loginScreen = new LoginScreen();
         TutorialScreen tutorialScreen = new TutorialScreen();
         PlayerScreen playerScreen = new PlayerScreen(); // TODO: replace placeholder constructor
-        StatsScreen statsScreen = new StatsScreen("Placeholder"); // TODO: Replace placeholder constructor
-        GameStoreScreen gameStoreScreen = new GameStoreScreen(3000);        // GameStoreScreen gameStoreScreen = new GameStoreScreen(null);
+        StatsScreen statsScreen = new StatsScreen(); // TODO: Replace placeholder constructor
+        GameStoreScreen gameStoreScreen = new GameStoreScreen();        // GameStoreScreen gameStoreScreen = new GameStoreScreen(null);
         ParentalControls parentalControls = new ParentalControls();
 
         // Add screens to list of screens (add as screens are implemented)
