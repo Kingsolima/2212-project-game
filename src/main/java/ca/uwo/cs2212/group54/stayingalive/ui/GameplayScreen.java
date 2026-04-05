@@ -161,6 +161,9 @@ public class GameplayScreen implements Screen {
      */
     private void buildUI() {
         backButton = buildBackButton();
+        gamePanel.setGameListener(() -> {
+            showLevelResult(gamePanel.getGameplay().isLevelCleared());
+        });
         gamePanel.add(backButton);
         GameplayFrame.getContentPane().add(gamePanel);
 

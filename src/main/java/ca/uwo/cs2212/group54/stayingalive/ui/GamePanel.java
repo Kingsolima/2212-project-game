@@ -42,6 +42,7 @@ public class GamePanel extends JPanel implements ActionListener, KeyListener {
     // Gameplay Related
     private static boolean running;
     private Gameplay gameplay;
+    private GameOverListener listener;
 
     public GamePanel(Gameplay gameplay) {
         setFocusable(true);
@@ -147,6 +148,7 @@ public class GamePanel extends JPanel implements ActionListener, KeyListener {
         float deltaTime = (now - lastTime) / 30_000_000.0f;
         lastTime = now;
         updateGame(deltaTime);
+        updatePanel();
         repaint();
     }
 
@@ -155,6 +157,16 @@ public class GamePanel extends JPanel implements ActionListener, KeyListener {
      */
     private void updateGame(float deltaTime) {
         gameplay.update(deltaTime);
+    }
+
+    /**
+     * Updates the panel to check if the game is over.f
+     */
+    private void updatePanel() {
+        if (gameplay.isGameOver() || gameplay.isLevelCleared()) {
+            gameLoop.stop();
+            listener.onGameOver();
+        }
     }
 
     // Key controls
@@ -177,4 +189,8 @@ public class GamePanel extends JPanel implements ActionListener, KeyListener {
     public static boolean getRunState() { return running; }
 
     public Gameplay getGameplay() { return gameplay; }
+
+    public void setGameListener(GameOverListener listener) {
+        this.listener = listener;
+    }
 }
