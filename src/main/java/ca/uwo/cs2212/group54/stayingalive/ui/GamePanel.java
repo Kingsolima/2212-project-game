@@ -18,6 +18,7 @@ import javax.swing.JPanel;
 import javax.swing.Timer;
 
 import ca.uwo.cs2212.group54.stayingalive.audio.AudioManager;
+import ca.uwo.cs2212.group54.stayingalive.accounts.AccountManagement;
 import ca.uwo.cs2212.group54.stayingalive.game.Enemies.Enemy;
 import ca.uwo.cs2212.group54.stayingalive.game.Gameplay;
 
@@ -148,7 +149,8 @@ public class GamePanel extends JPanel implements ActionListener, KeyListener {
             borderSize + 10, NavigationControl.screenH * 2 - borderSize - 50);
         
         // Current Level
-        g.drawString("Level: " + GameplayScreen.player.getProgress().getCurrentLevel(), 
+        int level = AccountManagement.getCurrentAccount().getProgress().getCurrentLevel();
+        g.drawString("Level: " + level, 
             borderSize + 10, NavigationControl.screenH * 2 - borderSize - 100);
         
 

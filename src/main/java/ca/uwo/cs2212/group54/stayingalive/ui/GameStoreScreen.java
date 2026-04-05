@@ -21,7 +21,27 @@ import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.BasicStroke;
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Cursor;
+import java.awt.Dimension;
+import java.awt.FlowLayout;
+import java.awt.Font;
+import java.awt.FontMetrics;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.GridLayout;
+import java.awt.Image;
+import java.awt.RenderingHints;
+import java.awt.event.ActionEvent;
+import java.awt.event.KeyEvent;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.io.File;
+import java.util.ArrayList;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -489,7 +509,6 @@ public class GameStoreScreen implements Screen {
     }
 
 
-    // TODO: ADD KEYBOARD NAV FUNCTIONALITY
     // ── General Navigation ────────────────────────────────────────────────
     /**
      * General navigation for both keyboard and button presses.
@@ -505,6 +524,14 @@ public class GameStoreScreen implements Screen {
     }
     
 
+    /**
+     * Add key press functionality to a given key to handle logic
+     * 
+     * @param target The component to give the navigation logic to
+     * @param keyCode The key to give logic to
+     * @param action The logic to give
+     * @author Fardin Abbassi
+     */
     @Override
     public void addKeyShortcut(JComponent target, int keyCode, Action action) {
         InputMap im = target.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW);
@@ -514,13 +541,12 @@ public class GameStoreScreen implements Screen {
         am.put(key, action);
     }
     // ── Screen Implemented Functions
-    // TODO: Action listener
+    
     @Override
     public void actionPerformed(ActionEvent e) {
         AudioManager.playButtonClick();
         if (e.getActionCommand() != null) navigateTo(e.getActionCommand());
     }
-    //TODO: public showScreen
     @Override
     public void showScreen() {
         if (gameStoreFrame == null) {
@@ -533,7 +559,6 @@ public class GameStoreScreen implements Screen {
         loadAvatar("global/download.png");
         initItems();
         buildUI();
-        //gameStoreFrame.setContentPane(screen);
         gameStoreFrame.setLocationRelativeTo(null);
         gameStoreFrame.setVisible(true);
         WindowUtils.setAppIcon(gameStoreFrame);
@@ -543,7 +568,7 @@ public class GameStoreScreen implements Screen {
             AudioManager.playButtonClick(); navigateTo("Back"); }
         });
     }
-    // TODO: public moveToNextScreen
+
     @Override
     public void moveToNextScreen(String screenToMoveTo) {
         // when integrating, move from this class to player menu when the back button is clicked
@@ -552,7 +577,6 @@ public class GameStoreScreen implements Screen {
             NavigationControl.setCurrentScreen(3);
         }
     }
-    // TODO: public getFrame
     @Override
     public JFrame getFrame() {return this.gameStoreFrame;}
 }

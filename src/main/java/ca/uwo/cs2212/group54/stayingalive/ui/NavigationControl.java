@@ -38,7 +38,7 @@ public class NavigationControl {
      */
     private static void updateScreen() {
         currentScreen.showScreen();
-        if (!currentScreen.getClass().toString().equals("class ca.uwo.cs2212.group54.stayingalive.ui.LoginScreen")){
+        if (!currentScreen.getClass().toString().equals("class ca.uwo.cs2212.group54.stayingalive.ui.LoginScreen") && !currentScreen.getClass().toString().equals("class ca.uwo.cs2212.group54.stayingalive.ui.GameplayScreen")){
              currentScreen.getFrame().setSize(screenW, screenH);
              System.out.println(currentScreen.getClass().toString());   // debug
         }
@@ -87,8 +87,8 @@ public class NavigationControl {
         MainMenuScreen mainMenu = new MainMenuScreen();
         LoginScreen loginScreen = new LoginScreen();
         TutorialScreen tutorialScreen = new TutorialScreen();
-        PlayerScreen playerScreen = new PlayerScreen(); // TODO: replace placeholder constructor
-        StatsScreen statsScreen = new StatsScreen(); // TODO: Replace placeholder constructor
+        PlayerScreen playerScreen = new PlayerScreen();
+        StatsScreen statsScreen = new StatsScreen();
         GameStoreScreen gameStoreScreen = new GameStoreScreen();        // GameStoreScreen gameStoreScreen = new GameStoreScreen(null);
         ParentalControls parentalControls = new ParentalControls();
         GameplayScreen gameplayScreen = new GameplayScreen();
