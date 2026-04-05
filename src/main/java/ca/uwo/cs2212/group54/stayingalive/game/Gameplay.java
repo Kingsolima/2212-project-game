@@ -37,6 +37,7 @@ public class Gameplay {
     private List<Enemy> activeEnemies;
     private float timeSinceLastSpawn;
     private float inputLockTimer;
+    private Random random;
     private static final Point[] SPAWN_POINTS = new Point[16];
     private static final int MIN_DISTANCE = 100;
     private static final int MAX_SPAWN_ATTEMPTS = 50; // attempts to spread apart enemy spawn locations
