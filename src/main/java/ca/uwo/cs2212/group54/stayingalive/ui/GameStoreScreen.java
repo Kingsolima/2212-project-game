@@ -502,6 +502,14 @@ public class GameStoreScreen implements Screen {
     }
     
 
+    /**
+     * Add key press functionality to a given key to handle logic
+     * 
+     * @param target The component to give the navigation logic to
+     * @param keyCode The key to give logic to
+     * @param action The logic to give
+     * @author Fardin Abbassi
+     */
     @Override
     public void addKeyShortcut(JComponent target, int keyCode, Action action) {
         InputMap im = target.getInputMap(JComponent.WHEN_IN_FOCUSED_WINDOW);
@@ -511,7 +519,7 @@ public class GameStoreScreen implements Screen {
         am.put(key, action);
     }
     // ── Screen Implemented Functions
-    // TODO: Action listener
+    
     @Override
     public void actionPerformed(ActionEvent e) {
         if (e.getActionCommand() != null) navigateTo(e.getActionCommand());
@@ -528,7 +536,6 @@ public class GameStoreScreen implements Screen {
         loadAvatar("global/download.png");
         initItems();
         buildUI();
-        //gameStoreFrame.setContentPane(screen);
         gameStoreFrame.setLocationRelativeTo(null);
         gameStoreFrame.setVisible(true);
         WindowUtils.setAppIcon(gameStoreFrame);

@@ -81,7 +81,7 @@ public class Account {
         return username;
     }
 
-    protected String getPassword() {
+    public String getPassword() {
         return pass;
     }
 
