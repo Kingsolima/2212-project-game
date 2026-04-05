@@ -72,6 +72,7 @@ public class GamePanel extends JPanel implements ActionListener, KeyListener {
         GradientPaint gp = new GradientPaint(0, 0, GameplayScreen.getBackgroundClr1(), 
         0, getHeight(), GameplayScreen.getBackgroundClr2());
         g.fillRect(20, 20, getWidth() - 20, getHeight() - 20);
+        
 
         g2d.setPaint(gp);
         g2d.fillRect(borderSize, borderSize, getWidth() - borderSize * 2, getHeight() - borderSize * 2);
@@ -144,6 +145,11 @@ public class GamePanel extends JPanel implements ActionListener, KeyListener {
         g.setFont(scoreFont);
         g.drawString("Current Score: " + gameplay.getScore(), 
             borderSize + 10, NavigationControl.screenH * 2 - borderSize - 50);
+        
+        // Current Level
+        g.drawString("Level: " + GameplayScreen.player.getProgress().getCurrentLevel(), 
+            borderSize + 10, NavigationControl.screenH * 2 - borderSize - 100);
+        
 
         // this is for to  draw result overlay if level is cleared or failed
         if (showResultOverlay) {
@@ -157,8 +163,8 @@ public class GamePanel extends JPanel implements ActionListener, KeyListener {
         float deltaTime = (now - lastTime) / 30_000_000.0f;
         lastTime = now;
         updateGame(deltaTime);
-        updatePanel();
         repaint();
+        updatePanel();
     }
 
     /**
@@ -218,7 +224,7 @@ public class GamePanel extends JPanel implements ActionListener, KeyListener {
     public void setGameListener(GameOverListener listener) {
         this.listener = listener;
     }
-}
+
     /**
      * Draws the result overlay when the player completes or fails a level.
      * 
@@ -246,4 +252,5 @@ public class GamePanel extends JPanel implements ActionListener, KeyListener {
         g2d.drawString("Score: " + gameplay.getScore(), x + 180, y + 120);
         g2d.drawString("WPM: " + gameplay.getWPM(), x + 190, y + 150);
     }
+
 }

@@ -308,6 +308,14 @@ public class Gameplay {
             int totalWords = corrects + mistakes;
             double accuracy = totalWords == 0 ? 0.0 : ((double) corrects / totalWords) * 100.0;
             
+            if (isLevelCleared()) {
+                int currentLevel = this.player.getProgress().getCurrentLevel();
+                this.player.getProgress().completeLevel(currentLevel);
+                if (currentLevel < 3) {
+                    this.player.getProgress().setCurrentLevel(currentLevel + 1);
+                }
+            }
+            
             Level_status status = isLevelCleared() ? Level_status.COMPLETED : Level_status.UNLOCKED;
             
             int newHighscore = Math.max(score, stats.getHighscore());

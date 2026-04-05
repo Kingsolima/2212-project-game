@@ -15,8 +15,10 @@ import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 
 import ca.uwo.cs2212.group54.stayingalive.accounts.Account;
+import ca.uwo.cs2212.group54.stayingalive.accounts.AccountManagement;
 import ca.uwo.cs2212.group54.stayingalive.game.Gameplay;
 import ca.uwo.cs2212.group54.stayingalive.game.Levels.Difficulty;
+import ca.uwo.cs2212.group54.stayingalive.game.Levels.LevelData;
 import ca.uwo.cs2212.group54.stayingalive.game.Levels.LevelSelector;
 
 /**
@@ -45,14 +47,22 @@ public class GameplayScreen implements Screen {
 
     // Other
     private GamePanel gamePanel;
+    private int level;
+    static Account player = new Account("random1","test"); // test
 
     public GameplayScreen() {
-        Account player = new Account("random1","test");
+        //buildPanel(AccountManagement.getCurrentAccount());
+    }
+
+    private void buildPanel(Account player) {
         int currentPlayerLevel = player.playerProgress.getCurrentLevel();
         //int currentPlayerLevel = 1;
-        Difficulty difficulty = Difficulty.values()[currentPlayerLevel];
-        Gameplay gameplay = new Gameplay(player,LevelSelector.getLevel(1, currentPlayerLevel, difficulty),difficulty);
+        Difficulty difficulty = Difficulty.values()[currentPlayerLevel-1];
+        LevelData ld = LevelSelector.getLevel(1, currentPlayerLevel, difficulty);
+        level = ld.getNumber();
+        Gameplay gameplay = new Gameplay(player,ld,difficulty);
         gamePanel = new GamePanel(gameplay);
+        buildUI();
     }
 
    /**
@@ -61,13 +71,11 @@ public class GameplayScreen implements Screen {
      * @param win true if the player wins the level, false if the player loses
      * @author Mohamed Ahmed
      */
-    public void showLevelResult(boolean win) {
-
-        int currentLevel = 3; 
+    public void showLevelResult(boolean win, int currentLevel) {
 
         String message;
         Object[] options;
-
+        System.out.println(player.getProgress().getCurrentLevel());
         if (win) {
             if (currentLevel == 3) {
                 message = "congratulations you have completed the game";
@@ -93,24 +101,30 @@ public class GameplayScreen implements Screen {
         );
 
         if (win) {
+            // level 3
             if (currentLevel == 3) {
                 if (choice == 0) {
-                    System.out.println("Restart whole game");
+                    buildPanel(AccountManagement.getCurrentAccount());
                 } else {
                     moveToNextScreen("Player");
                 }
             } else {
-                if (choice == 0) {
-                    System.out.println("Go to next level");
-                } else if (choice == 1) {
-                    System.out.println("Restart level");
-                } else {
-                    moveToNextScreen("Player");
+                switch (choice) {
+                    case 0:
+                        buildPanel(AccountManagement.getCurrentAccount());
+                        System.out.println("completed");
+                        break;
+                    case 1:
+                        buildPanel(AccountManagement.getCurrentAccount());
+                        break;
+                    default:
+                        moveToNextScreen("Player");
+                        break;
                 }
             }
         } else {
             if (choice == 0) {
-                System.out.println("Please restart level");
+                buildPanel(AccountManagement.getCurrentAccount());
             } else {
                 moveToNextScreen("Player");
             }
@@ -132,11 +146,9 @@ public class GameplayScreen implements Screen {
                     break;
                 case "Next Level":
                     System.out.println("→ Next level");
-                    // TODO: add here
                     break;
                 case "Restart Level":
                     System.out.println("→ Restart level");
-                    // TODO: add here
                     break;
             }
         }
@@ -147,6 +159,7 @@ public class GameplayScreen implements Screen {
      */
     @Override
     public void showScreen() {
+        buildPanel(AccountManagement.getCurrentAccount());
         GameplayFrame.getContentPane().removeAll();
         buildUI();
         GameplayFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -160,17 +173,21 @@ public class GameplayScreen implements Screen {
      * Construct the UI for the gameplay screen
      */
     private void buildUI() {
+        GameplayFrame.getContentPane().removeAll();
         backButton = buildBackButton();
         gamePanel.setGameListener(() -> {
-            showLevelResult(gamePanel.getGameplay().isLevelCleared());
+            Gameplay g = gamePanel.getGameplay();
+            gamePanel.getGameplay().endLevel();
+            showLevelResult(g.isLevelCleared(), level);
         });
         gamePanel.add(backButton);
         GameplayFrame.getContentPane().add(gamePanel);
-
+        GameplayFrame.revalidate();
+        GameplayFrame.repaint();
     }
 
     /** Back button using the back.png image from the global folder. */
-    private JButton buildBackButton() {                                          // TODO: Add javadoc comments to method
+    private JButton buildBackButton() {
         ImageIcon icon = null;
         File imgFile = new File("global/back.png");
         if (imgFile.exists()) {
@@ -208,7 +225,6 @@ public class GameplayScreen implements Screen {
      */
     @Override
     public JFrame getFrame() {
-        // TODO Auto-generated method stub
         return null;
     }
 
