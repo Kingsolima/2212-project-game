@@ -41,7 +41,6 @@ public class Gameplay {
     private static final int MIN_DISTANCE = 100;
     private static final int MAX_SPAWN_ATTEMPTS = 50; // attempts to spread apart enemy spawn locations
     private static final int SPAWN_BORDER_RADIUS = 99; // amnt of pixels that form a spawnable border
-    private Random random;
     private boolean levelCleared;
     private Account player;
     private LevelData levelData;

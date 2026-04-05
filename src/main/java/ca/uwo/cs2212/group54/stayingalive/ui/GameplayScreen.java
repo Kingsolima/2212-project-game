@@ -60,9 +60,22 @@ public class GameplayScreen implements Screen {
     @Override
     public void actionPerformed(ActionEvent e) {
         // move from this class to player menu when back button is clicked
-        if (e.getActionCommand() != null && e.getActionCommand().equals("Back")) {
-            System.out.println("→ Back");
-            this.moveToNextScreen("Player");
+        if (e.getActionCommand() != null) {
+            switch (e.getActionCommand()) {
+                case "Back":
+                    System.out.println("→ Back");
+                    gamePanel.getGameplay().endLevel();
+                    this.moveToNextScreen("Player");
+                    break;
+                case "Next Level":
+                    System.out.println("→ Next level");
+                    // TODO: add here
+                    break;
+                case "Restart Level":
+                    System.out.println("→ Next level");
+                    // TODO: add here
+                    break;
+            }
         }
     }
     
