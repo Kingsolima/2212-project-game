@@ -175,4 +175,6 @@ public class GamePanel extends JPanel implements ActionListener, KeyListener {
     }
 
     public static boolean getRunState() { return running; }
+
+    public Gameplay getGameplay() { return gameplay; }
 }
