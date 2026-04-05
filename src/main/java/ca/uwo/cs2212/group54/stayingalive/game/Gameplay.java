@@ -12,7 +12,7 @@ import ca.uwo.cs2212.group54.stayingalive.accounts.Account;
 import ca.uwo.cs2212.group54.stayingalive.accounts.LevelStatistic;
 import ca.uwo.cs2212.group54.stayingalive.accounts.Level_status;
 import ca.uwo.cs2212.group54.stayingalive.accounts.Parental;
-import ca.uwo.cs2212.group54.stayingalive.audio.AudioManager;
+import ca.uwo.cs2212.group54.stayingalive.AudioManager;
 import ca.uwo.cs2212.group54.stayingalive.game.Enemies.Enemy;
 import ca.uwo.cs2212.group54.stayingalive.game.Levels.Difficulty;
 import ca.uwo.cs2212.group54.stayingalive.game.Levels.LevelData;
@@ -207,7 +207,7 @@ public class Gameplay {
         }
 
         // No match found
-        AudioManager.playTypeError();
+        AudioManager.playPlayerError();
         mistakes++;
         inputLockTimer = 1.0f;
     }

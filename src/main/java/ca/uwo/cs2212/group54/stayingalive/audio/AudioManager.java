@@ -11,6 +11,7 @@ import kuusisto.tinysound.TinySound;
 public class AudioManager {
     public static Sound playerHit;
     public static Sound enemyHit;
+    public static Sound playerError;
     public static Sound buttonClick;
     public static Sound playerHeal;
     public static Sound pouwerup;
@@ -32,6 +33,7 @@ public class AudioManager {
             buttonClick = TinySound.loadSound("global/sfx/press_button.wav");
             playerHit = TinySound.loadSound("global/sfx/player_damaged.wav");
             enemyHit = TinySound.loadSound("global/sfx/enemy_hit.wav");
+            playerError = TinySound.loadSound("global/sfx/player_error.wav");
             playerHeal = TinySound.loadSound("global/sfx/player_heal.wav");
             pouwerup = TinySound.loadSound("global/sfx/pouwerup_used.wav");
             gameover = TinySound.loadSound("global/sfx/game_lost.wav");
@@ -72,6 +74,13 @@ public class AudioManager {
      */
     public static void playEnemyHit() {
         if (enemyHit != null) enemyHit.play();
+    }
+
+    /**
+     * Play player error sound
+     */
+    public static void playPlayerError() {
+        if (playerError != null) playerError.play();
     }
 
     /**
