@@ -37,14 +37,15 @@ public class Gameplay {
     private List<Enemy> activeEnemies;
     private float timeSinceLastSpawn;
     private float inputLockTimer;
+    private Random random;
     private static final Point[] SPAWN_POINTS = new Point[16];
     private static final int MIN_DISTANCE = 100;
-    private static final int MAX_SPAWN_ATTEMPTS = 50; // times it will attempt to spawn away from other enemies
+    private static final int MAX_SPAWN_ATTEMPTS = 50; // attempts to spread apart enemy spawn locations
     private static final int SPAWN_BORDER_RADIUS = 99; // amnt of pixels that form a spawnable border
-    private Random random;
     private boolean levelCleared;
     private Account player;
     private LevelData levelData;
+    private Enemy inFocus;
 
     private static final int PLAYER_X = NavigationControl.screenW;
     private static final int PLAYER_Y = NavigationControl.screenH;
@@ -76,18 +77,18 @@ public class Gameplay {
         switch (difficulty) {
             case EASY:  {
                 this.maxWeight = 10; 
-                this.spawnDelay = 3.0f;
-                break;
+                //this.spawnDelay = 3.0f; old spawn delay
+                this.spawnDelay = 100.0f;
             }
             case MEDIUM:  {
                 this.maxWeight = 15; 
-                this.spawnDelay = 2.5f;
-                break;
+                //this.spawnDelay = 2.5f; old
+                this.spawnDelay = 50.0f;
             }
             case HARD:  {
                 this.maxWeight = 20;
-                this.spawnDelay = 1.0f;
-                break;
+                //this.spawnDelay = 1.0f; old
+                this.spawnDelay = 20.0f;
             }
         }
         
@@ -196,6 +197,7 @@ public class Gameplay {
                     activeEnemies.add(spawned);
                     currWeight += spawned.getWeight();
                     timeSinceLastSpawn = 0;
+                    if (inFocus == null) setInFocus(); // sets an enemy into focus
                 }
             }
         }
@@ -244,7 +246,20 @@ public class Gameplay {
             return; // Player is stunned
         }
 
-        for (Enemy enemy : activeEnemies) {
+        if (inFocus.wordContainsChar(input)) {
+            inFocus.unlockNextCharacter();
+            inFocus.updateWords();
+            updateScore(inFocus.getScore(), difficulty);
+
+            if (inFocus.isDefeated()) {
+                updateScore(inFocus.getScore() * 5, difficulty);
+                currWeight -= inFocus.getWeight();
+                activeEnemies.remove(inFocus);
+                setInFocus(); // sets a new enemy into focus
+            }
+        }
+
+        /*for (Enemy enemy : activeEnemies) {
             String currentWord = enemy.getCurrentWord();
             if (enemy.wordContainsChar(input)) {
                 enemy.unlockNextCharacter();
@@ -257,7 +272,7 @@ public class Gameplay {
                     activeEnemies.remove(enemy);
                 }
             }
-        }
+        }*/
 
         // No match found
         mistakes++;
@@ -272,9 +287,9 @@ public class Gameplay {
      */
     public void updateScore(int amount, Difficulty difficulty) {
         switch (difficulty) {
-            case EASY: this.score += amount; break;
-            case MEDIUM: this.score += amount * 1.5; break;
-            case HARD: this.score += amount * 2; break;
+            case EASY: this.score += amount;
+            case MEDIUM: this.score += amount * 1.5;
+            case HARD: this.score += amount * 2;
         }
     }
 
@@ -292,6 +307,14 @@ public class Gameplay {
             }
             int totalWords = corrects + mistakes;
             double accuracy = totalWords == 0 ? 0.0 : ((double) corrects / totalWords) * 100.0;
+            
+            if (isLevelCleared()) {
+                int currentLevel = this.player.getProgress().getCurrentLevel();
+                this.player.getProgress().completeLevel(currentLevel);
+                if (currentLevel < 3) {
+                    this.player.getProgress().setCurrentLevel(currentLevel + 1);
+                }
+            }
             
             Level_status status = isLevelCleared() ? Level_status.COMPLETED : Level_status.UNLOCKED;
             
@@ -396,6 +419,33 @@ public class Gameplay {
 
         return p;
     }
+
+    /**
+     * Sets into focus the enemy that's closest to the player.
+     * This method is used to focus on an enemy so that its word can be typed
+     * before typing the characters to words that belong to other enemies.
+     */
+    public void setInFocus() {
+        Enemy closest = null;
+        float closestDistance = Float.MAX_VALUE;
+
+        // Find the closest enemy
+        for (Enemy enemy : activeEnemies) {
+            float dist = enemy.getDistanceFrom(new Point(PLAYER_X, PLAYER_Y)); // or however you do it
+            if (dist < closestDistance) {
+                closestDistance = dist;
+                closest = enemy;
+            }
+        }
+
+        inFocus = closest;
+    }
+
+    /**
+     * Getter to return the enemy that's currently being focused on
+     * @return The enemy that the player is focused on.
+     */
+    public Enemy getInFocus() { return inFocus; }
 
     public static int getPlayerX() { return PLAYER_X; }
     public static int getPlayerY() { return PLAYER_Y; }

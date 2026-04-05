@@ -1,6 +1,7 @@
 package ca.uwo.cs2212.group54.stayingalive.ui;
 
-import ca.uwo.cs2212.group54.stayingalive.accounts.*;
+import ca.uwo.cs2212.group54.stayingalive.accounts.AccountManagement;
+import ca.uwo.cs2212.group54.stayingalive.accounts.Parental;
 
 /**
  * NavigationControl class both controls the screen navigation and the origin point of the application.
@@ -89,6 +90,7 @@ public class NavigationControl {
         StatsScreen statsScreen = new StatsScreen(); // TODO: Replace placeholder constructor
         GameStoreScreen gameStoreScreen = new GameStoreScreen();        // GameStoreScreen gameStoreScreen = new GameStoreScreen(null);
         ParentalControls parentalControls = new ParentalControls();
+        GameplayScreen gameplayScreen = new GameplayScreen();
 
         // Add screens to list of screens (add as screens are implemented)
         listOfScreens[0] = mainMenu;
@@ -98,7 +100,7 @@ public class NavigationControl {
         listOfScreens[4] = statsScreen;         // stats
         listOfScreens[5] = gameStoreScreen;     // game store           //listOfScreens[5] = gameStoreScreen;     // game store
         listOfScreens[6] = parentalControls;    // parental control
-        listOfScreens[7] = null;                // gameplay
+        listOfScreens[7] = gameplayScreen;                // gameplay
         
 
         // Add account manager and start at main menu

@@ -1,5 +1,7 @@
 package ca.uwo.cs2212.group54.stayingalive.game.Enemies;
 
+import java.awt.Point;
+
 import ca.uwo.cs2212.group54.stayingalive.sprites.Sprite;
 
 /**
@@ -236,9 +238,15 @@ public class Enemy {
      */
     public void updateWords() {
         if (!isDefeated()) {
+            // all characters for that word were unlocked
             if (getFirstUnlockedChar() == -1) {
-                this.currentWordIndex++;
-                charsPressed = new boolean[words[currentWordIndex].length()];
+                // last index
+                if (currentWordIndex == words.length - 1) {
+                    this.currentWordIndex++;
+                } else {
+                    this.currentWordIndex++;
+                    charsPressed = new boolean[words[currentWordIndex].length()];
+                }
             }
         }
     }
@@ -281,5 +289,18 @@ public class Enemy {
             if (getCurrentWord().charAt(unlockedIndex) == c) return true;
         }
         return false;
+    }
+
+    /**
+     * Gets the distance between point and this enemy. Can be used to
+     * find closest enemy in an enemy list.
+     * @param point The point from which the distance has to be calculated
+     * @return The amount of distance.
+     */
+    public float getDistanceFrom(Point point) {
+        float dx = point.x - exactX;
+        float dy = point.y - exactY;
+        
+        return (float) Math.sqrt(dx * dx + dy * dy);
     }
 }

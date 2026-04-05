@@ -37,10 +37,12 @@ public class GamePanel extends JPanel implements ActionListener, KeyListener {
     private static final int textOffset = 20;
     private static final int borderSize = 20;
     private static final int heartImageSize = 80;
+    private static final int padding = 10;
 
     // Gameplay Related
     private static boolean running;
     private Gameplay gameplay;
+    private GameOverListener listener;
 
     // This is the logic for showing the result overlay when a level is cleared or failed
     private boolean showResultOverlay = false;
@@ -49,6 +51,7 @@ public class GamePanel extends JPanel implements ActionListener, KeyListener {
     public GamePanel(Gameplay gameplay) {
         setFocusable(true);
         addKeyListener(this);
+        this.setLayout(null);
 
         this.gameplay = gameplay;
 
@@ -69,6 +72,7 @@ public class GamePanel extends JPanel implements ActionListener, KeyListener {
         GradientPaint gp = new GradientPaint(0, 0, GameplayScreen.getBackgroundClr1(), 
         0, getHeight(), GameplayScreen.getBackgroundClr2());
         g.fillRect(20, 20, getWidth() - 20, getHeight() - 20);
+        
 
         g2d.setPaint(gp);
         g2d.fillRect(borderSize, borderSize, getWidth() - borderSize * 2, getHeight() - borderSize * 2);
@@ -97,13 +101,28 @@ public class GamePanel extends JPanel implements ActionListener, KeyListener {
                 g.setFont(enemyFont);
                 
                 // FOR HIGHLIGHTING BEHIND IT
-                FontMetrics fontMetrics = g.getFontMetrics(); // Calculate font size
-                String highlight = currentWord.substring(0,enemy.getFirstUnlockedChar());
-                int textWidth = fontMetrics.stringWidth(highlight);
-                int textHeight = fontMetrics.getHeight();
-                g.setColor(Color.GREEN);
-                g.fillRect(textX, textY - fontMetrics.getAscent(),
-                    textWidth, textHeight); // Highlight behind characters
+                if (enemy.equals(gameplay.getInFocus())) {
+                    /*
+                    g.setColor(Color.CYAN);
+                    g.drawRect(enemy.getPositionX(), enemy.getPositionY(),
+                    100, 100);*/
+                    
+                    FontMetrics fontMetrics = g.getFontMetrics(); // Calculate font size
+                    String typedLetters = currentWord.substring(0,enemy.getFirstUnlockedChar());
+
+                    int textHeight = fontMetrics.getHeight();
+
+                    int typedTextWidth = fontMetrics.stringWidth(typedLetters.toUpperCase());
+                    int textWidth = fontMetrics.stringWidth(currentWord.toUpperCase());
+
+                    g.setColor(Color.BLUE);
+                    g.fillRect(textX, textY - fontMetrics.getAscent(),
+                        textWidth, textHeight); // Highlight behind enemy word for focused enemy
+                    g.setColor(Color.GREEN);
+                    g.fillRect(textX, textY - fontMetrics.getAscent(),
+                        typedTextWidth, textHeight); // Highlight behind typed characters
+                    
+                }
                 
                 // Drawing enemy current word
                 g.setColor(textColor);
@@ -126,6 +145,11 @@ public class GamePanel extends JPanel implements ActionListener, KeyListener {
         g.setFont(scoreFont);
         g.drawString("Current Score: " + gameplay.getScore(), 
             borderSize + 10, NavigationControl.screenH * 2 - borderSize - 50);
+        
+        // Current Level
+        g.drawString("Level: " + GameplayScreen.player.getProgress().getCurrentLevel(), 
+            borderSize + 10, NavigationControl.screenH * 2 - borderSize - 100);
+        
 
         // this is for to  draw result overlay if level is cleared or failed
         if (showResultOverlay) {
@@ -140,6 +164,7 @@ public class GamePanel extends JPanel implements ActionListener, KeyListener {
         lastTime = now;
         updateGame(deltaTime);
         repaint();
+        updatePanel();
     }
 
     /**
@@ -165,6 +190,16 @@ public class GamePanel extends JPanel implements ActionListener, KeyListener {
         }
     }
 
+    /**
+     * Updates the panel to check if the game is over.f
+     */
+    private void updatePanel() {
+        if (gameplay.isGameOver() || gameplay.isLevelCleared()) {
+            gameLoop.stop();
+            listener.onGameOver();
+        }
+    }
+
     // Key controls
     @Override
     public void keyPressed(KeyEvent e) {
@@ -183,6 +218,12 @@ public class GamePanel extends JPanel implements ActionListener, KeyListener {
     }
 
     public static boolean getRunState() { return running; }
+
+    public Gameplay getGameplay() { return gameplay; }
+
+    public void setGameListener(GameOverListener listener) {
+        this.listener = listener;
+    }
 
     /**
      * Draws the result overlay when the player completes or fails a level.
@@ -211,4 +252,5 @@ public class GamePanel extends JPanel implements ActionListener, KeyListener {
         g2d.drawString("Score: " + gameplay.getScore(), x + 180, y + 120);
         g2d.drawString("WPM: " + gameplay.getWPM(), x + 190, y + 150);
     }
+
 }
