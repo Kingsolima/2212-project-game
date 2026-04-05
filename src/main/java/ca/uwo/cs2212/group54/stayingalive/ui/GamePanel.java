@@ -44,6 +44,10 @@ public class GamePanel extends JPanel implements ActionListener, KeyListener {
     private Gameplay gameplay;
     private GameOverListener listener;
 
+    // This is the logic for showing the result overlay when a level is cleared or failed
+    private boolean showResultOverlay = false;
+    private boolean levelWon = false;
+
     public GamePanel(Gameplay gameplay) {
         setFocusable(true);
         addKeyListener(this);
@@ -51,7 +55,7 @@ public class GamePanel extends JPanel implements ActionListener, KeyListener {
 
         this.gameplay = gameplay;
 
-        // Game loop (runs ~60 FPS)
+        // Game loop (will run ~60 FPS)
         gameLoop = new Timer(16, this);
         gameLoop.start();
         running = true;
@@ -140,6 +144,11 @@ public class GamePanel extends JPanel implements ActionListener, KeyListener {
         g.setFont(scoreFont);
         g.drawString("Current Score: " + gameplay.getScore(), 
             borderSize + 10, NavigationControl.screenH * 2 - borderSize - 50);
+
+        // this is for to  draw result overlay if level is cleared or failed
+        if (showResultOverlay) {
+            drawOverlay(g2d);
+        }
     }
 
     @Override
@@ -156,7 +165,23 @@ public class GamePanel extends JPanel implements ActionListener, KeyListener {
      * All the updates that take place per frame.
      */
     private void updateGame(float deltaTime) {
+        // this will help us stop updating once result screen is shown
+        if (showResultOverlay) return;
+
         gameplay.update(deltaTime);
+
+        // to see and detect win or loss
+        if (gameplay.isLevelCleared()) {
+            showResultOverlay = true;
+            levelWon = true;
+            gameLoop.stop();
+        }
+
+        if (gameplay.isGameOver()) {
+            showResultOverlay = true;
+            levelWon = false;
+            gameLoop.stop();
+        }
     }
 
     /**
@@ -192,5 +217,33 @@ public class GamePanel extends JPanel implements ActionListener, KeyListener {
 
     public void setGameListener(GameOverListener listener) {
         this.listener = listener;
+    }
+}
+    /**
+     * Draws the result overlay when the player completes or fails a level.
+     * 
+     * @param g2d the graphics object used to draw the overlay
+     * @author Mohamed Ahmed
+     */
+    private void drawOverlay(Graphics2D g2d) {
+        int w = 500;
+        int h = 250;
+        int x = (getWidth() - w) / 2;
+        int y = (getHeight() - h) / 2;
+
+        g2d.setColor(new Color(60, 0, 100));
+        g2d.fillRect(x, y, w, h);
+
+        g2d.setColor(Color.WHITE);
+        g2d.drawRect(x, y, w, h);
+
+        g2d.setFont(new Font("Helvetica", Font.BOLD, 28));
+        String text = levelWon ? "Level Complete!" : "Game Over!";
+        int textWidth = g2d.getFontMetrics().stringWidth(text);
+        g2d.drawString(text, x + (w - textWidth) / 2, y + 60);
+
+        g2d.setFont(new Font("Helvetica", Font.PLAIN, 18));
+        g2d.drawString("Score: " + gameplay.getScore(), x + 180, y + 120);
+        g2d.drawString("WPM: " + gameplay.getWPM(), x + 190, y + 150);
     }
 }
