@@ -21,7 +21,27 @@ import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.BasicStroke;
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Cursor;
+import java.awt.Dimension;
+import java.awt.FlowLayout;
+import java.awt.Font;
+import java.awt.FontMetrics;
+import java.awt.Graphics;
+import java.awt.Graphics2D;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.GridLayout;
+import java.awt.Image;
+import java.awt.RenderingHints;
+import java.awt.event.ActionEvent;
+import java.awt.event.KeyEvent;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.io.File;
+import java.util.ArrayList;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -46,6 +66,7 @@ import javax.swing.SwingConstants;
 import ca.uwo.cs2212.group54.stayingalive.accounts.Account;
 import ca.uwo.cs2212.group54.stayingalive.accounts.AccountManagement;
 import ca.uwo.cs2212.group54.stayingalive.accounts.Parental;
+import ca.uwo.cs2212.group54.stayingalive.audio.AudioManager;
 
 /**
  * GameStoreScreen – lets the player spend accumulated score on power-ups and cosmetics.
@@ -432,7 +453,7 @@ public class GameStoreScreen implements Screen {
         buyBtn.setBorderPainted(false);
         buyBtn.setFocusPainted(false);
         buyBtn.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-        buyBtn.addActionListener(e -> handlePurchase(item));
+        buyBtn.addActionListener(e -> { AudioManager.playButtonClick(); handlePurchase(item); });
 
         JPanel btnWrapper = new JPanel(new GridBagLayout());
         btnWrapper.setOpaque(false);
@@ -454,6 +475,7 @@ public class GameStoreScreen implements Screen {
                     "Not Enough Coins", JOptionPane.WARNING_MESSAGE);
             return;
         }
+        AudioManager.playPowerup();
         playerCoins -= item.cost;
         currentUser.coins = playerCoins;
         Parental.saveAccountData(); // TODO: Ensure purchases are saved
@@ -522,6 +544,7 @@ public class GameStoreScreen implements Screen {
     
     @Override
     public void actionPerformed(ActionEvent e) {
+        AudioManager.playButtonClick();
         if (e.getActionCommand() != null) navigateTo(e.getActionCommand());
     }
     @Override
@@ -540,8 +563,9 @@ public class GameStoreScreen implements Screen {
         gameStoreFrame.setVisible(true);
         WindowUtils.setAppIcon(gameStoreFrame);
         addKeyShortcut((JPanel)gameStoreFrame.getContentPane(),KeyEvent.VK_ESCAPE, new AbstractAction() {
-            @Override
-            public void actionPerformed(ActionEvent e) { navigateTo("Back"); }
+        @Override
+        public void actionPerformed(ActionEvent e) {
+            AudioManager.playButtonClick(); navigateTo("Back"); }
         });
     }
 

@@ -12,6 +12,7 @@ import ca.uwo.cs2212.group54.stayingalive.accounts.Account;
 import ca.uwo.cs2212.group54.stayingalive.accounts.LevelStatistic;
 import ca.uwo.cs2212.group54.stayingalive.accounts.Level_status;
 import ca.uwo.cs2212.group54.stayingalive.accounts.Parental;
+import ca.uwo.cs2212.group54.stayingalive.audio.AudioManager;
 import ca.uwo.cs2212.group54.stayingalive.game.Enemies.Enemy;
 import ca.uwo.cs2212.group54.stayingalive.game.Levels.Difficulty;
 import ca.uwo.cs2212.group54.stayingalive.game.Levels.LevelData;
@@ -210,6 +211,7 @@ public class Gameplay {
             
             
             if (enemy.contact(PLAYER_X, PLAYER_Y, SAFE_RADIUS)) {
+                AudioManager.playPlayerHit();
                 this.changeLives(-enemy.getDamage());
                 this.updateScore(-100, this.difficulty);
                 this.currWeight -= enemy.getWeight();
@@ -267,6 +269,7 @@ public class Gameplay {
                 updateScore(enemy.getScore(), difficulty);
 
                 if (enemy.isDefeated()) {
+                    AudioManager.playEnemyHit();
                     updateScore(enemy.getScore() * 5, difficulty);
                     currWeight -= enemy.getWeight();
                     activeEnemies.remove(enemy);
@@ -275,6 +278,7 @@ public class Gameplay {
         }*/
 
         // No match found
+        AudioManager.playPlayerError();
         mistakes++;
         inputLockTimer = 1.0f;
     }
@@ -361,6 +365,9 @@ public class Gameplay {
      */
     public void changeLives(int change) {
         this.lives += change;
+        if (change > 0) {
+            AudioManager.playPlayerHeal();
+        }
     }
 
     /**

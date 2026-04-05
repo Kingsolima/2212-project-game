@@ -2,8 +2,11 @@ package ca.uwo.cs2212.group54.stayingalive.ui;
 
 import java.awt.*;
 import java.awt.event.*;
+import java.awt.*;
+import java.awt.event.*;
 import java.io.File;
 
+import javax.swing.*;
 import javax.swing.*;
 
 import ca.uwo.cs2212.group54.stayingalive.accounts.Account;
@@ -12,6 +15,7 @@ import ca.uwo.cs2212.group54.stayingalive.game.Gameplay;
 import ca.uwo.cs2212.group54.stayingalive.game.Levels.Difficulty;
 import ca.uwo.cs2212.group54.stayingalive.game.Levels.LevelData;
 import ca.uwo.cs2212.group54.stayingalive.game.Levels.LevelSelector;
+import ca.uwo.cs2212.group54.stayingalive.audio.AudioManager;
 
 /**
  * 
@@ -185,6 +189,7 @@ public void showLevelResult(boolean win) {
      */
     @Override
     public void actionPerformed(ActionEvent e) {
+        AudioManager.playButtonClick();
         // move from this class to player menu when back button is clicked
         if (e.getActionCommand() != null) {
             switch (e.getActionCommand()) {
